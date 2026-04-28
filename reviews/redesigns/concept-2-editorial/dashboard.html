@@ -1,0 +1,1329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Brief — A Private Portfolio Quarterly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bone: #F4EFE6;
+    --bone-2: #EAE3D6;
+    --bone-3: #DCD3C0;
+    --rule: #C7BBA3;
+    --ink: #1A1612;
+    --ink-2: #2F2A24;
+    --ink-soft: #5C544A;
+    --muted: #8A8175;
+    --oxblood: #6E1E26;
+    --forest: #1F3A2E;
+    --gold: #8C6B1F;
+    --rose-fade: #B8434F;
+    --green-fade: #2F6A4F;
+    --serif: "Fraunces", "GT Sectra", "Tiempos Headline", Georgia, serif;
+    --sans: "Inter Tight", "Söhne", "Untitled Sans", -apple-system, system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bone);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-feature-settings: "ss01", "ss02", "cv11", "tnum";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    line-height: 1.55;
+  }
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.45;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10  0 0 0 0 0.08  0 0 0 0 0.06  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  .page { max-width: 1440px; margin: 0 auto; padding: 28px 56px 96px; }
+
+  .masthead {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 32px;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding: 14px 0 10px;
+  }
+  .masthead .left, .masthead .right {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    display: flex;
+    gap: 18px;
+    align-items: baseline;
+  }
+  .masthead .right { justify-content: flex-end; }
+  .masthead .title {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 56px;
+    line-height: 0.88;
+    letter-spacing: -0.02em;
+    text-align: center;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+    margin: 0;
+  }
+  .masthead .title em { font-style: italic; font-weight: 400; }
+  .submast {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 24px;
+    padding: 8px 0 0;
+    border-bottom: 0.5px solid var(--rule);
+    padding-bottom: 14px;
+  }
+  .submast .latin {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .submast .vol {
+    text-align: center;
+    font-family: var(--sans);
+    font-size: 10.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .submast .vol em { font-family: var(--serif); font-style: italic; text-transform: none; letter-spacing: 0; color: var(--ink); }
+  .submast .ed {
+    text-align: right;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 0.5px solid var(--ink); padding: 4px 10px;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink); background: transparent;
+    cursor: pointer;
+  }
+  .pill .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--green-fade); animation: breathe 2.4s ease-in-out infinite; }
+  .pill.off .dot { background: var(--muted); animation: none; }
+  @keyframes breathe { 0%, 100% { opacity: 1 } 50% { opacity: 0.35 } }
+
+  .lede {
+    display: grid;
+    grid-template-columns: 7fr 5fr;
+    gap: 56px;
+    padding: 36px 0 28px;
+    border-bottom: 1px solid var(--ink);
+  }
+  .kicker {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--oxblood);
+    margin-bottom: 14px;
+  }
+  .kicker::before { content: "§ "; color: var(--oxblood); }
+  .lede h1 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 76px;
+    line-height: 0.94;
+    letter-spacing: -0.022em;
+    margin: 0 0 18px;
+    color: var(--ink);
+    font-variation-settings: "opsz" 144, "SOFT" 50;
+  }
+  .lede h1 em { font-style: italic; font-weight: 400; color: var(--oxblood); }
+  .lede .deck {
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.45;
+    color: var(--ink-2);
+    max-width: 56ch;
+    font-weight: 300;
+    font-style: italic;
+  }
+  .lede .byline {
+    margin-top: 22px;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .lede .byline span { color: var(--ink); font-weight: 500; }
+  .lede .summary {
+    border-left: 0.5px solid var(--rule);
+    padding-left: 32px;
+  }
+  .lede .summary dt {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .lede .summary dd {
+    margin: 0 0 18px;
+    font-family: var(--serif);
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+  .lede .summary dd em { font-style: italic; color: var(--oxblood); }
+
+  .kpis {
+    display: grid;
+    grid-template-columns: 2.4fr 1fr 1fr 1fr 1fr;
+    gap: 0;
+    padding: 28px 0 0;
+    border-bottom: 1px solid var(--ink);
+  }
+  .kpi {
+    padding: 12px 28px 28px 0;
+    border-right: 0.5px solid var(--rule);
+  }
+  .kpi:last-child { border-right: none; padding-right: 0; }
+  .kpi:nth-child(n+2) { padding-left: 28px; }
+  .kpi .label {
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 14px;
+  }
+  .kpi .value {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-variation-settings: "opsz" 144, "SOFT" 0;
+    font-feature-settings: "tnum", "lnum";
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .kpi.hero .value { font-size: 84px; }
+  .kpi .value { font-size: 38px; }
+  .kpi .sub {
+    margin-top: 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+  }
+  .pos { color: var(--forest); }
+  .neg { color: var(--oxblood); }
+  .pos-soft { color: var(--green-fade); }
+  .neg-soft { color: var(--rose-fade); }
+
+  .sec {
+    margin-top: 56px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 18px;
+    align-items: end;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 10px;
+    margin-bottom: 24px;
+  }
+  .sec .num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--oxblood);
+  }
+  .sec .name {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 28px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .sec .name em { font-style: italic; font-weight: 400; }
+  .sec .meta {
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .row { display: grid; gap: 56px; }
+  .row.r1 { grid-template-columns: 8fr 4fr; }
+  .row.r2 { grid-template-columns: 5fr 7fr; }
+  .row.r3 { grid-template-columns: 6fr 6fr; }
+
+  table.ledger {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-feature-settings: "tnum", "lnum";
+  }
+  table.ledger thead th {
+    text-align: left;
+    font-weight: 500;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--ink);
+  }
+  table.ledger thead th.num { text-align: right; }
+  table.ledger tbody td {
+    padding: 14px 12px;
+    border-bottom: 0.5px solid var(--rule);
+    color: var(--ink-2);
+    vertical-align: baseline;
+  }
+  table.ledger tbody td.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-family: var(--mono);
+    font-size: 12.5px;
+  }
+  table.ledger tbody tr:hover td { background: rgba(199,187,163,0.18); }
+  .sym {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 17px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    display: block;
+  }
+  .sym .name {
+    display: block;
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .sector-tag {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .weight-bar {
+    position: relative;
+    width: 64px;
+    height: 2px;
+    background: var(--bone-3);
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: middle;
+  }
+  .weight-bar > span { display: block; height: 100%; background: var(--ink); }
+
+  .block { padding: 0; }
+  .block h3.title {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 21px;
+    letter-spacing: -0.01em;
+    margin: 0 0 4px;
+  }
+  .block .deck {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin: 0 0 18px;
+    max-width: 50ch;
+  }
+
+  .conc { display: flex; flex-direction: column; }
+  .conc .row-c {
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    grid-template-rows: auto auto;
+    align-items: baseline;
+    gap: 4px 14px;
+    padding: 12px 0;
+    border-bottom: 0.5px solid var(--rule);
+  }
+  .conc .row-c:last-child { border-bottom: none; }
+  .conc .ord {
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: 14px; color: var(--oxblood);
+    grid-row: 1;
+  }
+  .conc .label-c {
+    font-family: var(--serif);
+    font-size: 17px;
+    color: var(--ink);
+    grid-row: 1;
+  }
+  .conc .label-c small {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-left: 8px;
+  }
+  .conc .pct {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink);
+    grid-row: 1;
+  }
+  .conc-bar {
+    grid-column: 2 / 4;
+    grid-row: 2;
+    height: 1.5px;
+    background: var(--bone-3);
+    margin-top: 4px;
+    position: relative;
+  }
+  .conc-bar > span { display: block; height: 100%; background: var(--ink); }
+
+  .sector-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .sector-list { font-family: var(--serif); font-size: 15px; }
+  .sector-list .row-s {
+    display: grid;
+    grid-template-columns: 12px 1fr auto auto;
+    gap: 12px;
+    align-items: baseline;
+    padding: 8px 0;
+    border-bottom: 0.5px solid var(--rule);
+  }
+  .sector-list .swatch { width: 10px; height: 10px; border-radius: 0; margin-top: 6px; }
+  .sector-list .pct { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); width: 56px; text-align: right; }
+  .sector-list .val { font-family: var(--mono); font-size: 12px; color: var(--ink); width: 100px; text-align: right; }
+
+  .memo {
+    background: var(--bone-2);
+    padding: 36px 40px 32px;
+    border-top: 2px solid var(--ink);
+    border-bottom: 0.5px solid var(--rule);
+    column-count: 2;
+    column-gap: 40px;
+    column-rule: 0.5px solid var(--rule);
+  }
+  .memo .head {
+    column-span: all;
+    margin-bottom: 22px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 18px;
+    align-items: baseline;
+    border-bottom: 0.5px solid var(--ink);
+    padding-bottom: 12px;
+  }
+  .memo .head .stamp {
+    font-family: var(--sans);
+    font-size: 9.5px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--oxblood);
+    border: 0.5px solid var(--oxblood);
+    padding: 4px 8px;
+  }
+  .memo .head .ttl {
+    font-family: var(--serif);
+    font-size: 30px;
+    letter-spacing: -0.01em;
+    font-weight: 500;
+    margin: 0;
+  }
+  .memo .head .ttl em { font-style: italic; font-weight: 400; }
+  .memo .head .author {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 13px;
+  }
+  .memo p {
+    font-family: var(--serif);
+    font-size: 15.5px;
+    line-height: 1.62;
+    margin: 0 0 14px;
+    color: var(--ink-2);
+    text-align: justify;
+    hyphens: auto;
+  }
+  .memo p:first-of-type::first-letter {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 56px;
+    line-height: 0.85;
+    float: left;
+    padding: 6px 10px 0 0;
+    color: var(--oxblood);
+  }
+  .memo h4 {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin: 18px 0 6px;
+    break-after: avoid;
+  }
+  .memo blockquote {
+    margin: 16px 0;
+    padding: 14px 0;
+    border-top: 0.5px solid var(--ink);
+    border-bottom: 0.5px solid var(--ink);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 19px;
+    line-height: 1.4;
+    color: var(--ink);
+    break-inside: avoid;
+  }
+  .memo blockquote::before { content: "\201C"; font-size: 38px; line-height: 0; vertical-align: -0.2em; color: var(--oxblood); margin-right: 4px; }
+
+  .prompt-row {
+    column-span: all;
+    margin-top: 18px;
+    border-top: 1px solid var(--ink);
+    padding-top: 16px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: stretch;
+  }
+  .prompt-row input[type=text] {
+    border: none; background: transparent;
+    border-bottom: 0.5px solid var(--ink);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 17px;
+    padding: 8px 0;
+    color: var(--ink);
+    width: 100%;
+    outline: none;
+  }
+  .prompt-row input[type=text]::placeholder { color: var(--muted); }
+  .prompt-row button {
+    background: var(--ink);
+    color: var(--bone);
+    border: none;
+    padding: 0 22px;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 120ms ease;
+  }
+  .prompt-row button:active { transform: translateY(1px); }
+  .prompt-row .api {
+    margin-top: 10px;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 14px;
+    align-items: baseline;
+  }
+  .prompt-row .api input {
+    border: none; border-bottom: 0.5px dotted var(--rule);
+    background: transparent; padding: 4px 0; min-width: 280px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink);
+  }
+
+  .wire { display: flex; flex-direction: column; }
+  .wire-item {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 24px;
+    padding: 18px 0;
+    border-bottom: 0.5px solid var(--rule);
+  }
+  .wire-item:first-of-type { padding-top: 4px; }
+  .wire-item:last-child { border-bottom: none; }
+  .wire-item .stamp {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+  }
+  .wire-item .stamp .src {
+    display: block;
+    margin-top: 6px;
+    font-family: var(--sans);
+    font-size: 9px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--oxblood);
+  }
+  .wire-item .body h5 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 19px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+    color: var(--ink);
+  }
+  .wire-item .body p {
+    font-family: var(--serif);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-2);
+    margin: 0 0 6px;
+    max-width: 70ch;
+  }
+  .wire-item .tag {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-right: 14px;
+  }
+  .wire-item .tag.up { color: var(--forest); }
+  .wire-item .tag.down { color: var(--oxblood); }
+
+  .cal { display: grid; grid-template-columns: 1fr; }
+  .cal-row {
+    display: grid;
+    grid-template-columns: 92px 1fr 90px 90px 90px 96px;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 0.5px solid var(--rule);
+    align-items: baseline;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-feature-settings: "tnum","lnum";
+  }
+  .cal-row.head {
+    border-bottom: 1px solid var(--ink);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 0;
+  }
+  .cal-row .date {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--oxblood);
+  }
+  .cal-row .who { font-family: var(--serif); font-size: 17px; color: var(--ink); }
+  .cal-row .who small {
+    display: block;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .cal-row .num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); font-size: 13px; }
+  .cal-row .verdict {
+    text-align: right;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+  }
+  .cal-row .pending { color: var(--muted); font-family: var(--sans); font-style: normal; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; }
+
+  .source {
+    margin-top: 14px;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .source a { color: var(--oxblood); text-decoration: none; border-bottom: 0.5px solid var(--oxblood); }
+
+  .watch { display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; }
+  .watch .item {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 14px;
+    align-items: baseline;
+    padding: 12px 0;
+    border-bottom: 0.5px solid var(--rule);
+  }
+  .watch .sym2 { font-family: var(--serif); font-size: 17px; color: var(--ink); }
+  .watch .sym2 small {
+    display: block;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .watch .px { font-family: var(--mono); font-size: 13px; color: var(--ink); }
+  .watch .ch { font-family: var(--mono); font-size: 12px; }
+
+  .colophon {
+    margin-top: 80px;
+    padding: 28px 0 0;
+    border-top: 2px solid var(--ink);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .colophon strong {
+    font-family: var(--sans);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .upload {
+    border: 0.5px solid var(--ink);
+    padding: 6px 14px;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--ink);
+    background: transparent;
+  }
+  .upload:hover { background: var(--ink); color: var(--bone); }
+
+  .rule-ornament {
+    text-align: center;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 24px 0 0;
+    font-size: 18px;
+    letter-spacing: 0.4em;
+  }
+  .footnote {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 14px;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header>
+    <div class="masthead">
+      <div class="left">
+        <span>Riyadh &middot; New York</span>
+        <span>Tuesday</span>
+      </div>
+      <h1 class="title">The <em>Brief</em></h1>
+      <div class="right">
+        <button class="upload" type="button">Upload Ledger CSV →</button>
+        <button class="pill" id="liveToggle" type="button">
+          <span class="dot"></span><span class="lbl"> Live Quotes &mdash; Streaming</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="submast">
+      <div class="latin">Patientia opes parit &mdash; patience begets capital.</div>
+      <div class="vol">Vol. <em>VII</em> &middot; No. <em>112</em> &middot; <em>April 28, 2026</em> &middot; Edition <em>Morning</em></div>
+      <div class="ed">Prepared for <span style="color:var(--ink); font-weight:500;">PK / KBW Ventures</span></div>
+    </div>
+  </header>
+
+  <section class="lede">
+    <div>
+      <div class="kicker">Letter from the Desk &mdash; Equities &amp; Digital Assets</div>
+      <h1>A quiet quarter, with <em>two loud holdings</em> doing most of the work.</h1>
+      <div class="deck">
+        Concentration is again the story. Eighty-one cents of every dollar of unrealised gain this month sat in two positions &mdash; one chip, one chain. The book is otherwise composed, cash is light, and the watchlist has begun to look less like aspiration and more like patience.
+      </div>
+      <div class="byline">By <span>The Brief Desk</span> &middot; Closing marks April 28, 2026 &middot; 16:02 EDT</div>
+    </div>
+
+    <dl class="summary">
+      <dt>Net Liquidation</dt>
+      <dd>The book closes at <em>$24.71M</em>, marked at vendor consensus and adjusted for SAR cross.</dd>
+      <dt>Disposition</dt>
+      <dd>Long-only, twelve names, three currencies, no leverage. <em>Aramco</em> remains the single largest non-USD exposure.</dd>
+      <dt>What we will be reading</dt>
+      <dd>Microsoft prints Wednesday after the bell &mdash; the only Q-call that materially moves the book this week.</dd>
+    </dl>
+  </section>
+
+  <section class="kpis" aria-label="Headline figures">
+    <div class="kpi hero">
+      <div class="label">Net Liquidation Value &middot; USD</div>
+      <div class="value">$24,712,408</div>
+      <div class="sub">Cost basis $19,847,120 &middot; Unrealised <span class="pos">+24.51%</span></div>
+    </div>
+    <div class="kpi">
+      <div class="label">Total P&amp;L</div>
+      <div class="value pos">+$4.86M</div>
+      <div class="sub pos">+24.51% lifetime</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Day P&amp;L</div>
+      <div class="value neg">&minus;$71,294</div>
+      <div class="sub neg">&minus;0.29% session</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Cash Weight</div>
+      <div class="value">3.4<span style="font-size:0.55em; color:var(--ink-soft);">%</span></div>
+      <div class="sub">$840,116 dry</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Positions</div>
+      <div class="value">12</div>
+      <div class="sub">12 held &middot; 4 watched</div>
+    </div>
+  </section>
+
+  <div class="sec">
+    <div class="num">I.</div>
+    <div class="name">The <em>Ledger</em> &mdash; Holdings of Record</div>
+    <div class="meta">12 positions &middot; sorted by weight</div>
+  </div>
+
+  <div class="row r1">
+    <div>
+      <table class="ledger" role="table">
+        <thead>
+          <tr>
+            <th>Security</th>
+            <th>Sector</th>
+            <th class="num">Qty</th>
+            <th class="num">Avg. Cost</th>
+            <th class="num">Last</th>
+            <th class="num">Day %</th>
+            <th class="num">Mkt. Value</th>
+            <th class="num">Weight</th>
+            <th class="num">Unrealised P&amp;L</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="sym">NVDA<span class="name">NVIDIA Corp.</span></span></td>
+            <td><span class="sector-tag">Technology</span></td>
+            <td class="num">5,400</td>
+            <td class="num">478.20</td>
+            <td class="num">1,172.40</td>
+            <td class="num pos">+2.41%</td>
+            <td class="num">$6,330,960</td>
+            <td class="num">25.62%<span class="weight-bar"><span style="width:100%"></span></span></td>
+            <td class="num pos">+$3,748,680<br/><small style="font-family:var(--mono); font-size:10px; color:var(--ink-soft);">+145.16%</small></td>
+          </tr>
+          <tr>
+            <td><span class="sym">BTC<span class="name">Bitcoin</span></span></td>
+            <td><span class="sector-tag">Digital Asset</span></td>
+            <td class="num">35.42</td>
+            <td class="num">41,280.00</td>
+            <td class="num">97,845.00</td>
+            <td class="num pos">+1.62%</td>
+            <td class="num">$3,466,629</td>
+            <td class="num">14.03%<span class="weight-bar"><span style="width:54.7%"></span></span></td>
+            <td class="num pos">+$2,004,486<br/><small style="font-family:var(--mono); font-size:10px; color:var(--ink-soft);">+137.05%</small></td>
+          </tr>
+          <tr>
+            <td><span class="sym">AVGO<span class="name">Broadcom Inc.</span></span></td>
+            <td><span class="sector-tag">Technology</span></td>
+            <td class="num">1,820</td>
+            <td class="num">1,140.00</td>
+            <td class="num">1,742.30</td>
+            <td class="num pos">+1.18%</td>
+            <td class="num">$3,170,986</td>
+            <td class="num">12.84%<span class="weight-bar"><span style="width:50.1%"></span></span></td>
+            <td class="num pos">+$1,096,186<br/><small style="font-family:var(--mono); font-size:10px; color:var(--ink-soft);">+52.84%</small></td>
+          </tr>
+          <tr>
+            <td><span class="sym">2222.SR<span class="name">Saudi Aramco · Tadawul</span></span></td>
+            <td><span class="sector-tag">Energy</span></td>
+            <td class="num">312,000</td>
+            <td class="num">7.08</td>
+            <td class="num">7.57</td>
+            <td class="num pos">+0.71%</td>
+            <td class="num">$2,361,840</td>
+            <td class="num">9.55%<span class="weight-bar"><span style="width:37.3%"></span></span></td>
+            <td class="num pos">+$152,880<br/><small style="font-family:var(--mono); font-size:10px; color:var(--ink-soft);">+6.92%</small></td>
+          </tr>
+          <tr>
+            <td><span class="sym">MSFT<span class="name">Microsoft Corp.</span></span></td>
+            <td><span class="sector-tag">Technology</span></td>
+            <td class="num">4,280</td>
+            <td class="num">318.50</td>
+            <td class="num">442.18</td>
+            <td class="num neg">&minus;0.42%</td>
+            <td class="num">$1,892,530</td>
+            <td class="num">7.66%<span class="weight-bar"><span style="width:29.9%"></span></span></td>
+            <td class="num pos">+$528,950<br/><small style="font-family:var(--mono); font-size:10px; color:var(--ink-soft);">+38.83%</small></td>
+          </tr>
+          <tr>
+            <td><span class="sym">AAPL<span class="name">Apple Inc.</span></span></td>
+            <td><span class="sector-tag">Technology</span></td>
+            <td class="num">6,800</td>
+            <td class="num">176.40</td>
+            <td class="num">218.92</td>
+            <td class="num neg">&minus;0.18%</td>
+            <td class="num">$1,488,656</td>
+            <td class="num">6.02%<span class="weight-bar"><span style="width:23.5%"></span></span></td>
+            <td class="num pos">+$289,136<br/><small style="font-family:var(--mono); font-size:10px; color:var(--ink-soft);">+24.10%</small></td>
+          </tr>
+          <tr>
+            <td><span class="sym">JPM<span class="name">JPMorgan Chase</span></span></td>
+            <td><span class="sector-tag">Financial</span></td>
+            <td class="num">5,400</td>
+            <td class="num">178.20</td>
+            <td class="num">248.40</td>
+            <td class="num pos">+0.32%</td>
+            <td class="num">$1,341,360</td>
+            <td class="num">5.43%<span class="weight-bar"><span style="width:21.2%"></span></span></td>
+            <td class="num pos">+$379,080<br/><small style="font-family:var(--mono); font-size:10px; color:var(--ink-soft);">+39.39%</small></td>
+          </tr>
+          <tr>
+            <td><span class="sym">GOOGL<span class="name">Alphabet Inc. · Class A</span></span></td>
+            <td><span class="sector-tag">Communication</span></td>
+            <td class="num">7,200</td>
+            <td class="num">142.60</td>
+            <td class="num">184.10</td>
+            <td class="num pos">+0.84%</td>
+            <td class="num">$1,325,520</td>
+            <td class="num">5.36%<span class="weight-bar"><span style="width:20.9%"></span></span></td>
+            <td class="num pos">+$298,800<br/><small style="font-family:var(--mono); font-size:10px; color:var(--ink-soft);">+29.10%</small></td>
+          </tr>
+          <tr>
+            <td><span class="sym">LLY<span class="name">Eli Lilly &amp; Co.</span></span></td>
+            <td><span class="sector-tag">Healthcare</span></td>
+            <td class="num">1,620</td>
+            <td class="num">580.40</td>
+            <td class="num">818.20</td>
+            <td class="num neg">&minus;0.62%</td>
+            <td class="num">$1,325,484</td>
+            <td class="num">5.36%<span class="weight-bar"><span style="width:20.9%"></span></span></td>
+            <td class="num pos">+$385,236<br/><small style="font-family:var(--mono); font-size:10px; color:var(--ink-soft);">+40.97%</small></td>
+          </tr>
+          <tr>
+            <td><span class="sym">META<span class="name">Meta Platforms</span></span></td>
+            <td><span class="sector-tag">Communication</span></td>
+            <td class="num">1,840</td>
+            <td class="num">384.20</td>
+            <td class="num">612.08</td>
+            <td class="num pos">+0.21%</td>
+            <td class="num">$1,126,227</td>
+            <td class="num">4.56%<span class="weight-bar"><span style="width:17.8%"></span></span></td>
+            <td class="num pos">+$419,099<br/><small style="font-family:var(--mono); font-size:10px; color:var(--ink-soft);">+59.27%</small></td>
+          </tr>
+          <tr>
+            <td><span class="sym">TSLA<span class="name">Tesla Inc.</span></span></td>
+            <td><span class="sector-tag">Automotive</span></td>
+            <td class="num">1,820</td>
+            <td class="num">218.40</td>
+            <td class="num">248.92</td>
+            <td class="num neg">&minus;3.84%</td>
+            <td class="num">$453,034</td>
+            <td class="num">1.83%<span class="weight-bar"><span style="width:7.1%"></span></span></td>
+            <td class="num pos">+$55,572<br/><small style="font-family:var(--mono); font-size:10px; color:var(--ink-soft);">+13.97%</small></td>
+          </tr>
+          <tr>
+            <td><span class="sym">XOM<span class="name">Exxon Mobil Corp.</span></span></td>
+            <td><span class="sector-tag">Energy</span></td>
+            <td class="num">3,600</td>
+            <td class="num">102.20</td>
+            <td class="num">121.84</td>
+            <td class="num pos">+0.16%</td>
+            <td class="num">$438,624</td>
+            <td class="num">1.78%<span class="weight-bar"><span style="width:6.9%"></span></span></td>
+            <td class="num pos">+$70,704<br/><small style="font-family:var(--mono); font-size:10px; color:var(--ink-soft);">+19.21%</small></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="6" style="padding:18px 12px 0; font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink-soft);">
+              Marks reflect last vendor print; figures rounded to nearest cent.
+            </td>
+            <td class="num" style="padding:18px 12px 0; color: var(--ink);">$24,721,850</td>
+            <td class="num" style="padding:18px 12px 0; color: var(--ink);">100.0%</td>
+            <td class="num pos" style="padding:18px 12px 0;">+$9,428,809</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="block">
+      <h3 class="title">Where the <em>weight</em> sits</h3>
+      <p class="deck">Top five names account for sixty-eight percent of book value. Read this column the way a banker reads exposure.</p>
+      <div class="conc">
+        <div class="row-c">
+          <span class="ord">i.</span>
+          <span class="label-c">NVDA<small>Technology</small></span>
+          <span class="pct">25.62%</span>
+          <span class="conc-bar"><span style="width:98%"></span></span>
+        </div>
+        <div class="row-c">
+          <span class="ord">ii.</span>
+          <span class="label-c">BTC<small>Digital Asset</small></span>
+          <span class="pct">14.03%</span>
+          <span class="conc-bar"><span style="width:54%"></span></span>
+        </div>
+        <div class="row-c">
+          <span class="ord">iii.</span>
+          <span class="label-c">AVGO<small>Technology</small></span>
+          <span class="pct">12.84%</span>
+          <span class="conc-bar"><span style="width:49%"></span></span>
+        </div>
+        <div class="row-c">
+          <span class="ord">iv.</span>
+          <span class="label-c">2222.SR<small>Energy &middot; KSA</small></span>
+          <span class="pct">9.55%</span>
+          <span class="conc-bar"><span style="width:37%"></span></span>
+        </div>
+        <div class="row-c">
+          <span class="ord">v.</span>
+          <span class="label-c">MSFT<small>Technology</small></span>
+          <span class="pct">7.66%</span>
+          <span class="conc-bar"><span style="width:29%"></span></span>
+        </div>
+      </div>
+      <p class="footnote">A single 1% move in NVDA equates to roughly $63,300 of book P&amp;L &mdash; more than the next three names combined.</p>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="num">II.</div>
+    <div class="name">Sectoral <em>Exposure</em> &amp; the Analyst's Brief</div>
+    <div class="meta">Gemini 3.0 &middot; grounded, dated, sourced</div>
+  </div>
+
+  <div class="row r2">
+    <div class="block">
+      <h3 class="title">Composition by <em>sector</em></h3>
+      <p class="deck">Read with skepticism &mdash; sector tags collapse a 12-name universe into seven buckets.</p>
+
+      <div class="sector-grid">
+        <svg viewBox="0 0 200 200" width="100%" height="auto" aria-label="Sector donut">
+          <g transform="translate(100,100) rotate(-90)">
+            <circle r="78" cx="0" cy="0" fill="none" stroke="#1F3A2E" stroke-width="22" stroke-dasharray="183.4 489.8" stroke-dashoffset="0"/>
+            <circle r="78" cx="0" cy="0" fill="none" stroke="#6E1E26" stroke-width="22" stroke-dasharray="98.0 489.8" stroke-dashoffset="-183.4"/>
+            <circle r="78" cx="0" cy="0" fill="none" stroke="#8C6B1F" stroke-width="22" stroke-dasharray="68.6 489.8" stroke-dashoffset="-281.4"/>
+            <circle r="78" cx="0" cy="0" fill="none" stroke="#2F2A24" stroke-width="22" stroke-dasharray="49.0 489.8" stroke-dashoffset="-350.0"/>
+            <circle r="78" cx="0" cy="0" fill="none" stroke="#5C544A" stroke-width="22" stroke-dasharray="34.3 489.8" stroke-dashoffset="-399.0"/>
+            <circle r="78" cx="0" cy="0" fill="none" stroke="#8A8175" stroke-width="22" stroke-dasharray="29.4 489.8" stroke-dashoffset="-433.3"/>
+            <circle r="78" cx="0" cy="0" fill="none" stroke="#C7BBA3" stroke-width="22" stroke-dasharray="27.1 489.8" stroke-dashoffset="-462.7"/>
+          </g>
+          <text x="100" y="96" text-anchor="middle" font-family="Fraunces, serif" font-size="11" fill="#8A8175" letter-spacing="2" font-weight="500">SECTORS</text>
+          <text x="100" y="116" text-anchor="middle" font-family="Fraunces, serif" font-style="italic" font-size="22" fill="#1A1612">seven</text>
+        </svg>
+
+        <div class="sector-list">
+          <div class="row-s"><span class="swatch" style="background:#1F3A2E"></span><span>Technology</span><span class="pct">37.4%</span><span class="val">$9.24M</span></div>
+          <div class="row-s"><span class="swatch" style="background:#6E1E26"></span><span>Digital Asset</span><span class="pct">14.0%</span><span class="val">$3.46M</span></div>
+          <div class="row-s"><span class="swatch" style="background:#8C6B1F"></span><span>Energy</span><span class="pct">11.3%</span><span class="val">$2.80M</span></div>
+          <div class="row-s"><span class="swatch" style="background:#2F2A24"></span><span>Communication</span><span class="pct">9.9%</span><span class="val">$2.45M</span></div>
+          <div class="row-s"><span class="swatch" style="background:#5C544A"></span><span>Financial</span><span class="pct">5.4%</span><span class="val">$1.34M</span></div>
+          <div class="row-s"><span class="swatch" style="background:#8A8175"></span><span>Healthcare</span><span class="pct">5.4%</span><span class="val">$1.33M</span></div>
+          <div class="row-s"><span class="swatch" style="background:#C7BBA3"></span><span>Automotive</span><span class="pct">1.8%</span><span class="val">$0.45M</span></div>
+        </div>
+      </div>
+
+      <div style="margin-top: 32px;">
+        <div style="display:flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+          <span style="font-family: var(--sans); font-size:10px; letter-spacing:0.22em; text-transform: uppercase; color: var(--muted);">Net Liquidation &middot; Trailing 6 months</span>
+          <span style="font-family: var(--mono); font-size:11px; color: var(--ink-soft);">19.85M &rarr; 24.71M</span>
+        </div>
+        <svg viewBox="0 0 600 140" width="100%" height="140" preserveAspectRatio="none" aria-label="Six month NLV line">
+          <defs>
+            <linearGradient id="fadeFill" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#1F3A2E" stop-opacity="0.18"/>
+              <stop offset="100%" stop-color="#1F3A2E" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <line x1="0" y1="35" x2="600" y2="35" stroke="#C7BBA3" stroke-dasharray="1 4" stroke-width="0.5"/>
+          <line x1="0" y1="70" x2="600" y2="70" stroke="#C7BBA3" stroke-dasharray="1 4" stroke-width="0.5"/>
+          <line x1="0" y1="105" x2="600" y2="105" stroke="#C7BBA3" stroke-dasharray="1 4" stroke-width="0.5"/>
+          <path d="M0,108 L40,102 L80,98 L120,92 L160,99 L200,84 L240,72 L280,75 L320,60 L360,52 L400,48 L440,42 L480,38 L520,32 L560,30 L600,24 L600,140 L0,140 Z" fill="url(#fadeFill)"/>
+          <path d="M0,108 L40,102 L80,98 L120,92 L160,99 L200,84 L240,72 L280,75 L320,60 L360,52 L400,48 L440,42 L480,38 L520,32 L560,30 L600,24" fill="none" stroke="#1F3A2E" stroke-width="1.4"/>
+          <circle cx="200" cy="84" r="2.4" fill="#6E1E26"/>
+          <line x1="200" y1="84" x2="200" y2="20" stroke="#6E1E26" stroke-width="0.5" stroke-dasharray="2 2"/>
+          <text x="206" y="20" font-family="Fraunces, serif" font-style="italic" font-size="11" fill="#6E1E26">Feb 14 &middot; NVDA earnings</text>
+          <circle cx="600" cy="24" r="3" fill="#1F3A2E"/>
+          <text x="588" y="16" font-family="JetBrains Mono, monospace" font-size="10" fill="#1F3A2E" text-anchor="end">24.71M</text>
+        </svg>
+        <div style="display:flex; justify-content: space-between; margin-top:4px; font-family: var(--mono); font-size:10px; color:var(--muted);">
+          <span>Nov '25</span><span>Dec</span><span>Jan '26</span><span>Feb</span><span>Mar</span><span>Apr 28</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <article class="memo">
+        <header class="head">
+          <div class="stamp">Memorandum</div>
+          <h2 class="ttl">A book that is <em>two stocks pretending to be a portfolio.</em></h2>
+          <div class="author">&mdash; The Analyst</div>
+        </header>
+
+        <p>The figures are flattering. They should also be unsettling. A net liquidation of <strong>$24.71M</strong> is a function of two convictions, not twelve: <strong>NVDA</strong> at 25.6% of weight and <strong>BTC</strong> at 14.0%. Together they have produced more than four-fifths of unrealised gain this cycle. Every other position is, by the cold arithmetic, decoration.</p>
+
+        <p>This is not a criticism. Conviction concentrated is conviction expressed. It is, however, an instruction: the next quarter's volatility belongs almost entirely to two assets, and the rest of the book will not save you if either turns. NVDA, in particular, now exceeds the 20% house limit by 562 basis points.</p>
+
+        <h4>Risk &mdash; concentrated &amp; correlated</h4>
+        <p>Technology weight stands at 37.4%, against a sector cap of 35%. Cross-correlations between NVDA, AVGO and MSFT have tightened to 0.78 over the trailing 90 sessions. Read literally: in a tech drawdown, the book has fewer shock absorbers than the position count suggests.</p>
+
+        <blockquote>The portfolio looks diversified. It is not. It is a leveraged bet on AI compute, with an honest hedge in Saudi banking and a small altar of digital gold.</blockquote>
+
+        <h4>Performance &mdash; honest accounting</h4>
+        <p>Lifetime return of <strong>+24.51%</strong> trails a hypothetical 60/30/10 reference (US tech / global equities / BTC) by roughly 380 bps over the same window &mdash; chiefly the cost of being underweight semis until Q2 2025. The drag is past tense; the question is whether the current weighting earns its keep through year-end.</p>
+
+        <h4>Position limits &mdash; one breach, one warning</h4>
+        <p>NVDA above ceiling. Aramco (2222.SR) approaches the 10% non-USD soft cap at 9.55%. No mandate violation, but the Riyal cross has narrowed the hedge meaningfully since January. The desk recommends a <strong>3.5% trim of NVDA</strong> on strength, redeployed against the cash sleeve or the watchlist's ASML entry.</p>
+
+        <div class="prompt-row">
+          <input type="text" placeholder="Ask the desk &mdash; e.g., What if NVDA halves overnight?" />
+          <button type="button">Commission Brief</button>
+          <div class="api">
+            <span>Gemini Key</span>
+            <input type="password" placeholder="•••• •••• •••• ••••" value="abcd-1234" />
+            <span style="color:var(--green-fade);">Connected</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="num">III.</div>
+    <div class="name">The <em>Wire</em> &amp; the Earnings Calendar</div>
+    <div class="meta">Gemini grounded &middot; sourced inline</div>
+  </div>
+
+  <div class="row r3">
+    <div class="block">
+      <h3 class="title">From the <em>wire</em>, this morning</h3>
+      <p class="deck">Items selected for portfolio relevance only. No filler, no commodity headlines.</p>
+      <div class="wire">
+        <article class="wire-item">
+          <div class="stamp">28 Apr 2026<br/>14:48 EDT<span class="src">Reuters</span></div>
+          <div class="body">
+            <span class="tag up">NVDA &middot; +2.4%</span>
+            <h5>Nvidia signs multi-year supply pact with Saudi data-centre venture HUMAIN</h5>
+            <p>The agreement covers up to 18,000 GB300 accelerators through 2028 and includes a co-investment vehicle, expanding Riyadh's footprint in sovereign AI compute &mdash; a structural tailwind for the book's largest position and a soft positive for the Aramco-adjacent infrastructure trade.</p>
+          </div>
+        </article>
+        <article class="wire-item">
+          <div class="stamp">28 Apr 2026<br/>11:02 EDT<span class="src">Bloomberg</span></div>
+          <div class="body">
+            <span class="tag down">TSLA &middot; &minus;3.8%</span>
+            <h5>Tesla margins compress on China price war; Berlin output guidance cut</h5>
+            <p>Q1 automotive gross margin print of 16.2% missed consensus by 90 bps. Energy storage was the bright line. Read across to broader EV plays muted; book exposure modest.</p>
+          </div>
+        </article>
+        <article class="wire-item">
+          <div class="stamp">28 Apr 2026<br/>09:31 EDT<span class="src">FT</span></div>
+          <div class="body">
+            <span class="tag up">BTC &middot; +1.6%</span>
+            <h5>Bitcoin clears $98K as ETF flows print fifth straight positive week</h5>
+            <p>Spot ETF complex absorbed $1.3bn over the week, the largest non-launch print since November. Funding rates remain measured &mdash; this is real money, not levered speculation.</p>
+          </div>
+        </article>
+        <article class="wire-item">
+          <div class="stamp">28 Apr 2026<br/>06:14 EDT<span class="src">Argaam</span></div>
+          <div class="body">
+            <span class="tag up">2222.SR &middot; +0.7%</span>
+            <h5>Aramco confirms Q2 dividend at $0.221/sh; performance-linked tranche reaffirmed</h5>
+            <p>Tadawul close at SAR 28.40. The performance dividend remains ring-fenced through 2026, supporting the $1.04 annualised yield embedded in the desk's working model.</p>
+          </div>
+        </article>
+        <article class="wire-item">
+          <div class="stamp">27 Apr 2026<br/>21:00 EDT<span class="src">WSJ</span></div>
+          <div class="body">
+            <span class="tag">MSFT &middot; flat</span>
+            <h5>Microsoft to report fiscal Q3 after Wednesday's bell; Azure consensus +29% Y/Y</h5>
+            <p>Buy-side whisper sits closer to +31%. Capex guidance and the tone on AI monetisation will move the print as much as the headline numbers. The book's largest single-name post-earnings risk this week.</p>
+          </div>
+        </article>
+      </div>
+      <div class="source">Sources: Gemini grounded search &middot; Reuters, Bloomberg, Financial Times, Argaam, Wall Street Journal &middot; refreshed 16:02 EDT</div>
+    </div>
+
+    <div class="block">
+      <h3 class="title">The <em>earnings</em> calendar</h3>
+      <p class="deck">Names you own, dated. Actuals printed where reported, with surprise relative to consensus.</p>
+
+      <div class="cal">
+        <div class="cal-row head">
+          <span>When</span>
+          <span>Issuer</span>
+          <span class="num">EPS Est.</span>
+          <span class="num">EPS Act.</span>
+          <span class="num">Surprise</span>
+          <span class="num">Verdict</span>
+        </div>
+
+        <div class="cal-row">
+          <span class="date">Wed 30 Apr</span>
+          <span class="who">Microsoft <small>MSFT &middot; AMC</small></span>
+          <span class="num">3.22</span>
+          <span class="num pending">pending</span>
+          <span class="num pending">&mdash;</span>
+          <span class="verdict pending">awaiting</span>
+        </div>
+
+        <div class="cal-row">
+          <span class="date">Wed 30 Apr</span>
+          <span class="who">Meta Platforms <small>META &middot; AMC</small></span>
+          <span class="num">5.18</span>
+          <span class="num pending">pending</span>
+          <span class="num pending">&mdash;</span>
+          <span class="verdict pending">awaiting</span>
+        </div>
+
+        <div class="cal-row">
+          <span class="date">Thu 01 May</span>
+          <span class="who">Apple <small>AAPL &middot; AMC</small></span>
+          <span class="num">1.62</span>
+          <span class="num pending">pending</span>
+          <span class="num pending">&mdash;</span>
+          <span class="verdict pending">awaiting</span>
+        </div>
+
+        <div class="cal-row">
+          <span class="date">Tue 22 Apr</span>
+          <span class="who">Tesla <small>TSLA &middot; AMC</small></span>
+          <span class="num">0.42</span>
+          <span class="num">0.34</span>
+          <span class="num neg">&minus;19.0%</span>
+          <span class="verdict neg">disappointed</span>
+        </div>
+
+        <div class="cal-row">
+          <span class="date">Tue 22 Apr</span>
+          <span class="who">Alphabet <small>GOOGL &middot; AMC</small></span>
+          <span class="num">2.04</span>
+          <span class="num">2.27</span>
+          <span class="num pos">+11.3%</span>
+          <span class="verdict pos">cleared</span>
+        </div>
+
+        <div class="cal-row">
+          <span class="date">Wed 23 Apr</span>
+          <span class="who">JPMorgan Chase <small>JPM &middot; BMO</small></span>
+          <span class="num">4.18</span>
+          <span class="num">4.44</span>
+          <span class="num pos">+6.2%</span>
+          <span class="verdict pos">cleared</span>
+        </div>
+
+        <div class="cal-row">
+          <span class="date">Tue 29 Apr</span>
+          <span class="who">Eli Lilly <small>LLY &middot; BMO</small></span>
+          <span class="num">2.74</span>
+          <span class="num pending">pending</span>
+          <span class="num pending">&mdash;</span>
+          <span class="verdict pending">awaiting</span>
+        </div>
+
+        <div class="cal-row">
+          <span class="date">Wed 27 May</span>
+          <span class="who">Nvidia <small>NVDA &middot; AMC</small></span>
+          <span class="num">7.14</span>
+          <span class="num pending">pending</span>
+          <span class="num pending">&mdash;</span>
+          <span class="verdict pending">awaiting</span>
+        </div>
+      </div>
+
+      <p class="source">Consensus: Visible Alpha via Gemini grounded search &middot; last refreshed 28 Apr 2026 16:02 EDT &middot; <a href="#">view sources</a></p>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="num">IV.</div>
+    <div class="name">The <em>Watchlist</em> &mdash; names not yet owned</div>
+    <div class="meta">4 securities &middot; live quotes</div>
+  </div>
+
+  <div class="watch">
+    <div class="item">
+      <div class="sym2">ASML <small>ASML Holding &middot; Semis</small></div>
+      <div class="px">$1,042.18</div>
+      <div class="ch pos">+1.42%</div>
+    </div>
+    <div class="item">
+      <div class="sym2">BRK.B <small>Berkshire Hathaway &middot; Cong.</small></div>
+      <div class="px">$472.84</div>
+      <div class="ch neg">&minus;0.31%</div>
+    </div>
+    <div class="item">
+      <div class="sym2">SOL <small>Solana &middot; Digital Asset</small></div>
+      <div class="px">$184.62</div>
+      <div class="ch pos">+3.18%</div>
+    </div>
+    <div class="item">
+      <div class="sym2">2010.SR <small>SABIC &middot; Materials &middot; KSA</small></div>
+      <div class="px">SAR 76.40</div>
+      <div class="ch neg">&minus;0.92%</div>
+    </div>
+  </div>
+
+  <footer class="colophon">
+    <div>
+      <strong>About this Brief</strong>
+      The Brief is a private morning publication, generated daily for a single reader from CSV ledger data and grounded large-language-model search. Marks at last vendor print. No third-party paid feeds in use.
+    </div>
+    <div>
+      <strong>Methodology</strong>
+      Holdings parsed from uploaded CSV. Sector tags inferred from ticker map. SAR-denominated marks converted at 3.7500 USD&middot;SAR. Earnings actuals and headlines surfaced via Gemini 3.0 with Google Search grounding; all items dated and source-attributed.
+    </div>
+    <div>
+      <strong>Disclaimer</strong>
+      Not investment advice. Figures rounded. The desk holds no view of its own; views expressed are those of the model, prompted on the reader's data, and should be treated as a draft for human judgement.
+    </div>
+  </footer>
+
+  <p class="rule-ornament">&sect; &nbsp; &nbsp; &nbsp; &sect; &nbsp; &nbsp; &nbsp; &sect;</p>
+
+</div>
+
+<script>
+  // Live quote toggle — pure DOM text update, no innerHTML
+  (function() {
+    var btn = document.getElementById('liveToggle');
+    if (!btn) return;
+    var lbl = btn.querySelector('.lbl');
+    btn.addEventListener('click', function() {
+      btn.classList.toggle('off');
+      if (lbl) {
+        lbl.textContent = btn.classList.contains('off') ? ' Live Quotes — Paused' : ' Live Quotes — Streaming';
+      }
+    });
+  })();
+</script>
+</body>
+</html>

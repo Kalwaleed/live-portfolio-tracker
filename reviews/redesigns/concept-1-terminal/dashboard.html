@@ -1,0 +1,1248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>KBW//TERMINAL — PORTFOLIO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ----- TRADING DESK TERMINAL ----- */
+  /* color tokens — near-black w/ amber chrome + green/red P&L */
+  :root{
+    --bg-0:#070808;          /* deepest */
+    --bg-1:#0c0d0d;          /* panel */
+    --bg-2:#111313;          /* row alt */
+    --bg-3:#191b1b;          /* hover */
+    --bg-4:#23272a;          /* pressed */
+    --line:#1d2123;          /* hairline */
+    --line-2:#2a2f33;        /* stronger */
+    --ink:#e7e5dd;           /* primary text — warm bone */
+    --ink-2:#a9a89f;         /* secondary */
+    --ink-3:#6d6c64;         /* tertiary / labels */
+    --ink-4:#43433f;         /* disabled */
+    --amber:#ffb000;         /* terminal amber accent */
+    --amber-dim:#7a5300;
+    --green:#3fcf8e;         /* gain */
+    --green-dim:#0e3d2a;
+    --red:#ff5d5d;           /* loss */
+    --red-dim:#3d1414;
+    --blue:#5ac8fa;          /* info */
+    --violet:#b48cff;        /* AI */
+    --warn:#ff9f43;
+    --shadow:0 0 0 1px var(--line) inset;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg-0);color:var(--ink);}
+  body{
+    font-family:'JetBrains Mono', ui-monospace, monospace;
+    font-size:12px;
+    line-height:1.35;
+    font-feature-settings:"tnum" 1,"ss01" 1,"zero" 1;
+    letter-spacing:.01em;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  /* Scanline + grain atmosphere — restrained */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:1000;
+    background:
+      repeating-linear-gradient(0deg, rgba(255,255,255,.012) 0 1px, transparent 1px 3px);
+    mix-blend-mode:overlay;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:999;
+    background:radial-gradient(ellipse at 50% 0%, rgba(255,176,0,.03), transparent 60%);
+  }
+
+  /* ============== TOP BAR ============== */
+  .topbar{
+    height:32px;display:grid;
+    grid-template-columns:auto 1fr auto auto;
+    align-items:center; gap:0;
+    border-bottom:1px solid var(--line-2);
+    background:linear-gradient(180deg,#0a0b0b,#070808);
+    position:sticky;top:0;z-index:50;
+  }
+  .brand{
+    display:flex;align-items:center;gap:10px;padding:0 14px;height:100%;
+    border-right:1px solid var(--line-2);
+  }
+  .brand .mark{
+    width:14px;height:14px;background:var(--amber);
+    box-shadow:0 0 0 2px var(--bg-0), 0 0 12px rgba(255,176,0,.6);
+    animation:blip 2.4s infinite step-end;
+  }
+  @keyframes blip{0%,90%{opacity:1}95%{opacity:.35}}
+  .brand .name{
+    font-weight:600;letter-spacing:.18em;font-size:11px;color:var(--ink);
+  }
+  .brand .name span{color:var(--amber);}
+  .brand .build{color:var(--ink-3);font-size:10px;letter-spacing:.18em;}
+
+  .cmdwrap{display:flex;align-items:center;height:100%;border-right:1px solid var(--line-2);}
+  .cmdline{
+    flex:1;height:100%;display:flex;align-items:center;gap:10px;padding:0 14px;
+    color:var(--ink-2);
+  }
+  .cmdline .prompt{color:var(--amber);font-weight:700;}
+  .cmdline input{
+    background:transparent;border:0;outline:0;color:var(--ink);
+    font:inherit;flex:1;letter-spacing:.04em;
+  }
+  .cmdline .hint{color:var(--ink-3);font-size:10px;letter-spacing:.16em;}
+  .cmdline .caret{display:inline-block;width:7px;height:14px;background:var(--amber);
+    margin-left:-6px;animation:caret 1.05s steps(1) infinite;}
+  @keyframes caret{50%{opacity:0}}
+
+  .clock{
+    display:flex;align-items:center;gap:14px;padding:0 14px;height:100%;
+    border-right:1px solid var(--line-2);color:var(--ink-2);font-size:11px;
+  }
+  .clock .lbl{color:var(--ink-3);letter-spacing:.18em;font-size:10px;}
+  .clock .val{color:var(--ink);font-variant-numeric:tabular-nums;}
+  .clock .dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);}
+  .session-pill{
+    background:var(--green-dim);color:var(--green);padding:2px 8px;
+    font-size:10px;letter-spacing:.16em;font-weight:600;border:1px solid rgba(63,207,142,.25);
+  }
+
+  .topbar .actions{display:flex;align-items:center;height:100%;}
+  .topbar .actions button{
+    background:transparent;border:0;border-left:1px solid var(--line-2);
+    height:100%;padding:0 14px;color:var(--ink-2);font:inherit;font-size:11px;
+    letter-spacing:.14em;cursor:pointer;display:flex;align-items:center;gap:8px;
+  }
+  .topbar .actions button:hover{background:var(--bg-3);color:var(--ink);}
+  .topbar .actions button.primary{color:var(--amber);}
+  .kbd{
+    font-size:9px;color:var(--ink-3);border:1px solid var(--line-2);
+    padding:1px 5px;letter-spacing:.08em;background:var(--bg-1);
+  }
+
+  /* ============== TICKER ============== */
+  .ticker{
+    height:24px;display:flex;align-items:center;
+    border-bottom:1px solid var(--line-2);
+    background:var(--bg-1);overflow:hidden;position:relative;
+  }
+  .ticker::before,.ticker::after{
+    content:"";position:absolute;top:0;bottom:0;width:60px;z-index:2;pointer-events:none;
+  }
+  .ticker::before{left:0;background:linear-gradient(90deg,var(--bg-1),transparent);}
+  .ticker::after{right:0;background:linear-gradient(-90deg,var(--bg-1),transparent);}
+  .ticker .reel{display:flex;gap:28px;animation:reel 80s linear infinite;white-space:nowrap;padding-left:14px;}
+  @keyframes reel{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .tk{font-size:11px;color:var(--ink-2);letter-spacing:.04em;display:inline-flex;gap:8px;}
+  .tk b{color:var(--ink);font-weight:600;}
+  .tk .up{color:var(--green);} .tk .dn{color:var(--red);}
+
+  /* ============== TAB STRIP ============== */
+  .tabstrip{
+    display:flex;align-items:stretch;height:30px;
+    border-bottom:1px solid var(--line-2);background:var(--bg-0);
+  }
+  .tabstrip .tab{
+    display:flex;align-items:center;gap:8px;padding:0 14px;height:100%;
+    border-right:1px solid var(--line);
+    color:var(--ink-3);letter-spacing:.18em;font-size:10px;cursor:pointer;
+    position:relative;
+  }
+  .tabstrip .tab:hover{color:var(--ink-2);background:var(--bg-1);}
+  .tabstrip .tab.on{
+    color:var(--amber);background:var(--bg-1);
+  }
+  .tabstrip .tab.on::after{
+    content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--amber);
+    box-shadow:0 0 12px rgba(255,176,0,.5);
+  }
+  .tabstrip .tab .num{color:var(--ink-4);font-size:9px;}
+  .tabstrip .spacer{flex:1;}
+  .tabstrip .right{display:flex;align-items:center;gap:0;}
+  .tabstrip .right .chip{
+    display:flex;align-items:center;gap:8px;height:100%;padding:0 14px;
+    border-left:1px solid var(--line);color:var(--ink-3);font-size:10px;letter-spacing:.16em;
+  }
+  .tabstrip .right .chip b{color:var(--ink);}
+  .toggle{
+    display:inline-flex;align-items:center;gap:8px;cursor:pointer;color:var(--ink-2);
+  }
+  .switch{
+    width:26px;height:12px;background:var(--bg-3);border:1px solid var(--line-2);
+    position:relative;
+  }
+  .switch::after{content:"";position:absolute;top:1px;left:1px;width:8px;height:8px;
+    background:var(--ink-3);transition:.15s;}
+  .toggle.on .switch{background:var(--green-dim);border-color:rgba(63,207,142,.4);}
+  .toggle.on .switch::after{left:auto;right:1px;background:var(--green);box-shadow:0 0 8px var(--green);}
+
+  /* ============== KPI STRIP ============== */
+  .kpis{
+    display:grid;grid-template-columns:repeat(7, 1fr);
+    border-bottom:1px solid var(--line-2);
+  }
+  .kpi{
+    padding:12px 16px;border-right:1px solid var(--line);
+    display:flex;flex-direction:column;gap:6px;position:relative;background:var(--bg-1);
+  }
+  .kpi:last-child{border-right:0;}
+  .kpi .label{
+    font-size:9.5px;color:var(--ink-3);letter-spacing:.22em;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .kpi .label .src{color:var(--ink-4);}
+  .kpi .v{font-family:'JetBrains Mono',monospace;color:var(--ink);
+    font-size:20px;font-weight:600;letter-spacing:-.01em;}
+  .kpi .sub{font-size:11px;color:var(--ink-3);display:flex;gap:8px;align-items:center;}
+  .kpi .sub .delta{font-weight:600;}
+  .kpi .delta.up{color:var(--green);} .kpi .delta.dn{color:var(--red);}
+  .kpi .spark{position:absolute;right:10px;bottom:8px;opacity:.65;}
+  .kpi.glow .v{color:var(--amber);}
+
+  /* ============== MAIN GRID ============== */
+  .workspace{
+    display:grid;
+    grid-template-columns: 250px 1fr 320px;
+    grid-template-rows: minmax(280px, auto) minmax(220px, auto) minmax(220px, auto);
+    grid-template-areas:
+      "nav   table  ai"
+      "sect  table  news"
+      "conc  earn   news";
+    gap:0;border-bottom:1px solid var(--line-2);
+  }
+
+  .pane{
+    background:var(--bg-1);
+    border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    display:flex;flex-direction:column;min-height:0;
+  }
+  .pane:last-child{border-right:0;}
+  .pane-head{
+    height:26px;display:flex;align-items:center;justify-content:space-between;
+    padding:0 12px;border-bottom:1px solid var(--line-2);
+    background:linear-gradient(180deg,#101212,#0b0c0c);
+  }
+  .pane-head .ttl{font-size:10px;letter-spacing:.22em;color:var(--ink-2);font-weight:600;}
+  .pane-head .ttl .n{color:var(--amber);margin-right:8px;}
+  .pane-head .meta{font-size:10px;color:var(--ink-3);letter-spacing:.16em;display:flex;gap:10px;align-items:center;}
+  .pane-head .meta .led{width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:0 0 6px var(--green);}
+  .pane-body{flex:1;min-height:0;overflow:auto;}
+
+  /* === NAV PANE === */
+  .nav{grid-area:nav;}
+  .nav .group{padding:10px 12px;border-bottom:1px solid var(--line);}
+  .nav .group h4{
+    font-size:9.5px;color:var(--ink-3);letter-spacing:.22em;font-weight:600;margin-bottom:8px;
+  }
+  .nav .item{
+    display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;
+    padding:5px 6px;color:var(--ink-2);cursor:pointer;font-size:11.5px;
+  }
+  .nav .item:hover{background:var(--bg-3);color:var(--ink);}
+  .nav .item.on{color:var(--amber);background:rgba(255,176,0,.05);box-shadow:inset 2px 0 0 var(--amber);}
+  .nav .item .sym{color:var(--ink-4);width:18px;text-align:center;font-size:10px;}
+  .nav .item .kbdg{font-size:9px;color:var(--ink-4);border:1px solid var(--line-2);padding:0 4px;letter-spacing:.06em;}
+  .acct{
+    padding:12px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0e1010,#0b0c0c);
+  }
+  .acct .row{display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-3);padding:2px 0;}
+  .acct .row b{color:var(--ink);font-weight:500;}
+  .acct .row.acc b{color:var(--amber);}
+  .upload{
+    margin:10px 12px;padding:10px;border:1px dashed var(--line-2);
+    color:var(--ink-3);font-size:10.5px;text-align:center;letter-spacing:.12em;cursor:pointer;
+  }
+  .upload:hover{border-color:var(--amber);color:var(--amber);}
+  .upload b{display:block;color:var(--ink-2);margin-top:4px;letter-spacing:.04em;font-size:10px;}
+
+  /* === TABLE PANE === */
+  .tablepane{grid-area:table;}
+  .tabsubhead{
+    display:flex;align-items:center;height:24px;border-bottom:1px solid var(--line);
+    background:var(--bg-0);font-size:10px;color:var(--ink-3);letter-spacing:.18em;
+  }
+  .tabsubhead .seg{padding:0 14px;height:100%;display:flex;align-items:center;gap:8px;cursor:pointer;border-right:1px solid var(--line);}
+  .tabsubhead .seg.on{color:var(--amber);background:rgba(255,176,0,.04);}
+  .tabsubhead .seg .ct{color:var(--ink-4);}
+  .tabsubhead .filter{flex:1;display:flex;align-items:center;gap:8px;padding:0 12px;color:var(--ink-3);}
+  .tabsubhead .filter input{
+    background:transparent;border:0;color:var(--ink);font:inherit;outline:0;flex:1;
+  }
+  .tabsubhead .right{padding:0 12px;display:flex;gap:14px;color:var(--ink-3);font-size:10px;}
+  .tabsubhead .right b{color:var(--ink-2);}
+
+  table.book{
+    width:100%;border-collapse:collapse;font-size:11.5px;
+  }
+  table.book thead th{
+    position:sticky;top:0;background:#0a0b0b;border-bottom:1px solid var(--line-2);
+    color:var(--ink-3);font-weight:500;letter-spacing:.16em;font-size:9.5px;
+    text-align:right;padding:6px 10px;white-space:nowrap;text-transform:uppercase;
+  }
+  table.book thead th.l{text-align:left;}
+  table.book thead th.s{text-align:center;}
+  table.book thead th .arr{margin-left:4px;color:var(--amber);}
+  table.book tbody tr{
+    border-bottom:1px solid var(--line);transition:background .08s;
+  }
+  table.book tbody tr:nth-child(even){background:rgba(255,255,255,.012);}
+  table.book tbody tr:hover{background:var(--bg-3);}
+  table.book tbody tr.flag{box-shadow:inset 3px 0 0 var(--warn);}
+  table.book tbody tr.flag-red{box-shadow:inset 3px 0 0 var(--red);}
+  table.book td{
+    padding:6px 10px;text-align:right;white-space:nowrap;
+    font-variant-numeric:tabular-nums;color:var(--ink);
+  }
+  table.book td.l{text-align:left;}
+  table.book td.s{text-align:center;}
+  td.sym{font-weight:700;color:var(--ink);letter-spacing:.06em;}
+  td.sym .sub{display:block;font-size:9.5px;font-weight:400;color:var(--ink-3);letter-spacing:.04em;}
+  .pill{
+    display:inline-block;padding:1px 6px;font-size:9px;letter-spacing:.14em;
+    background:var(--bg-3);color:var(--ink-2);border:1px solid var(--line-2);
+  }
+  .pill.tech{color:#7fb7ff;border-color:rgba(127,183,255,.3);}
+  .pill.fin{color:#ffd47a;border-color:rgba(255,212,122,.3);}
+  .pill.com{color:#c5a8ff;border-color:rgba(197,168,255,.3);}
+  .pill.ene{color:#ff9f43;border-color:rgba(255,159,67,.3);}
+  .pill.cry{color:#f7c46c;border-color:rgba(247,196,108,.3);}
+  .pill.hea{color:#7ad9b1;border-color:rgba(122,217,177,.3);}
+  .pill.con{color:#ff8aa8;border-color:rgba(255,138,168,.3);}
+  .up{color:var(--green);} .dn{color:var(--red);} .neu{color:var(--ink-3);}
+  .num{font-variant-numeric:tabular-nums;}
+
+  /* sparkline cell */
+  td.spark{padding:2px 10px;text-align:center;}
+  td.spark svg{display:block;margin:0 auto;}
+
+  /* weight bar inside cell */
+  .wbar{
+    display:flex;align-items:center;gap:8px;justify-content:flex-end;
+  }
+  .wbar .b{width:50px;height:6px;background:var(--bg-3);position:relative;border:1px solid var(--line);}
+  .wbar .b > i{position:absolute;left:0;top:0;bottom:0;background:var(--amber);}
+  .wbar .b.over > i{background:var(--red);}
+  .wbar .v{min-width:38px;}
+
+  /* === SECTOR PANE (treemap-ish) === */
+  .sect{grid-area:sect;}
+  .sect-body{padding:10px;display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:34px;gap:2px;}
+  .sect-body .cell{
+    position:relative;background:var(--bg-3);border:1px solid var(--line-2);
+    padding:5px 8px;display:flex;flex-direction:column;justify-content:space-between;
+    overflow:hidden;cursor:pointer;
+  }
+  .sect-body .cell::before{
+    content:"";position:absolute;left:0;top:0;width:3px;height:100%;background:var(--amber);
+  }
+  .sect-body .cell.tech::before{background:#7fb7ff;}
+  .sect-body .cell.fin::before{background:#ffd47a;}
+  .sect-body .cell.com::before{background:#c5a8ff;}
+  .sect-body .cell.ene::before{background:#ff9f43;}
+  .sect-body .cell.cry::before{background:#f7c46c;}
+  .sect-body .cell.hea::before{background:#7ad9b1;}
+  .sect-body .cell.con::before{background:#ff8aa8;}
+  .sect-body .cell .lab{font-size:9.5px;letter-spacing:.16em;color:var(--ink-2);}
+  .sect-body .cell .val{font-size:11px;color:var(--ink);display:flex;justify-content:space-between;}
+  .sect-body .cell .val .pl{font-size:10px;}
+
+  /* === CONCENTRATION === */
+  .conc{grid-area:conc;}
+  .conc-body{padding:10px 12px;display:flex;flex-direction:column;gap:4px;}
+  .conc-row{
+    display:grid;grid-template-columns:48px 1fr 70px 60px;align-items:center;gap:10px;
+    padding:4px 0;border-bottom:1px dashed var(--line);
+  }
+  .conc-row:last-child{border-bottom:0;}
+  .conc-row .s{font-weight:700;color:var(--ink);letter-spacing:.06em;}
+  .conc-row .meter{height:8px;background:var(--bg-3);border:1px solid var(--line);position:relative;}
+  .conc-row .meter > i{position:absolute;left:0;top:0;bottom:0;background:var(--amber);}
+  .conc-row.over .meter > i{background:var(--red);box-shadow:0 0 10px rgba(255,93,93,.4);}
+  .conc-row .w{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink);}
+  .conc-row .pl{text-align:right;font-variant-numeric:tabular-nums;font-size:11px;}
+  .conc-row .flag-tag{font-size:8.5px;color:var(--red);letter-spacing:.16em;display:none;}
+  .conc-row.over .flag-tag{display:inline;}
+
+  /* === EARNINGS === */
+  .earn{grid-area:earn;}
+  .earn-body{padding:0;}
+  .earn table{width:100%;border-collapse:collapse;font-size:11.5px;}
+  .earn th{
+    text-align:left;padding:6px 10px;font-size:9.5px;color:var(--ink-3);letter-spacing:.18em;
+    border-bottom:1px solid var(--line-2);background:#0a0b0b;
+  }
+  .earn th.r{text-align:right;}
+  .earn td{padding:6px 10px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;color:var(--ink);}
+  .earn td.r{text-align:right;}
+  .earn td .sub{display:block;color:var(--ink-3);font-size:9.5px;letter-spacing:.06em;}
+  .earn .ststamp{font-size:9px;color:var(--ink-4);letter-spacing:.12em;}
+  .badge{
+    display:inline-block;padding:1px 6px;font-size:9px;letter-spacing:.14em;border:1px solid;
+  }
+  .badge.beat{color:var(--green);border-color:rgba(63,207,142,.3);background:rgba(63,207,142,.06);}
+  .badge.miss{color:var(--red);border-color:rgba(255,93,93,.3);background:rgba(255,93,93,.06);}
+  .badge.upc{color:var(--blue);border-color:rgba(90,200,250,.3);background:rgba(90,200,250,.06);}
+  .badge.line{color:var(--ink-2);border-color:var(--line-2);}
+
+  /* === AI PANEL === */
+  .ai{grid-area:ai;}
+  .ai .pane-head .ttl .n{color:var(--violet);}
+  .ai-body{padding:0;display:flex;flex-direction:column;}
+  .ai .stage{
+    padding:10px 12px;border-bottom:1px solid var(--line);
+    font-size:11px;color:var(--ink-2);
+  }
+  .ai .stage h5{
+    font-size:9.5px;letter-spacing:.22em;color:var(--ink-3);font-weight:600;margin-bottom:6px;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .ai .stage h5 .tok{color:var(--ink-4);font-size:9px;}
+  .ai .verdict{
+    display:flex;gap:10px;align-items:baseline;font-size:13px;color:var(--ink);font-weight:600;
+  }
+  .ai .verdict .score{font-size:24px;font-weight:700;color:var(--amber);letter-spacing:-.02em;}
+  .ai .verdict .lbl{color:var(--ink-3);font-size:10px;letter-spacing:.18em;font-weight:400;}
+  .ai .bullets{display:flex;flex-direction:column;gap:6px;margin-top:8px;}
+  .ai .bullets li{
+    list-style:none;padding-left:14px;position:relative;color:var(--ink-2);font-size:11px;line-height:1.45;
+  }
+  .ai .bullets li::before{content:"►";position:absolute;left:0;color:var(--violet);font-size:8px;top:3px;}
+  .ai .bullets li b{color:var(--ink);}
+  .ai .bullets li .tag{font-size:9px;color:var(--violet);letter-spacing:.12em;margin-right:6px;}
+  .ai .bullets li .tag.r{color:var(--red);}
+  .ai .bullets li .tag.g{color:var(--green);}
+
+  .ai .ask{
+    padding:10px 12px;border-top:1px solid var(--line-2);background:var(--bg-0);
+    display:flex;gap:6px;align-items:center;
+  }
+  .ai .ask .pmt{color:var(--violet);font-weight:700;}
+  .ai .ask input{flex:1;background:transparent;border:0;outline:0;color:var(--ink);font:inherit;}
+  .ai .ask .send{
+    font-size:9px;letter-spacing:.16em;padding:3px 8px;border:1px solid var(--line-2);
+    color:var(--violet);background:transparent;cursor:pointer;
+  }
+  .ai .ask .send:hover{border-color:var(--violet);}
+
+  /* === NEWS === */
+  .news{grid-area:news;}
+  .news-body{padding:0;}
+  .news .item{
+    padding:8px 12px;border-bottom:1px solid var(--line);font-size:11px;color:var(--ink-2);
+    display:grid;grid-template-columns:60px 1fr;gap:10px;align-items:start;
+  }
+  .news .item:hover{background:var(--bg-3);}
+  .news .item .ts{
+    color:var(--ink-3);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  }
+  .news .item .ts .src{display:block;color:var(--ink-4);font-size:8.5px;margin-top:2px;}
+  .news .item .body b{color:var(--ink);font-weight:600;display:inline;}
+  .news .item .body .tk{color:var(--amber);font-weight:600;letter-spacing:.04em;margin-right:4px;}
+  .news .item .body .tk.dn{color:var(--red);} .news .item .body .tk.up{color:var(--green);}
+  .news .item .body .meta{display:block;font-size:9px;color:var(--ink-4);margin-top:3px;letter-spacing:.06em;}
+
+  /* ============== STATUS BAR ============== */
+  .statusbar{
+    height:22px;display:grid;grid-template-columns:auto auto auto 1fr auto auto auto;
+    align-items:center;background:#000;border-top:1px solid var(--line-2);
+    font-size:10px;color:var(--ink-3);letter-spacing:.14em;
+  }
+  .statusbar .seg{padding:0 12px;height:100%;display:flex;align-items:center;gap:8px;border-right:1px solid var(--line);}
+  .statusbar .seg.r{border-right:0;border-left:1px solid var(--line);}
+  .statusbar .seg b{color:var(--ink);font-weight:500;}
+  .statusbar .seg .led{width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:0 0 6px var(--green);}
+  .statusbar .seg .led.amb{background:var(--amber);box-shadow:0 0 6px var(--amber);}
+  .statusbar .seg .led.red{background:var(--red);box-shadow:0 0 6px var(--red);}
+
+  /* keyboard hint floater */
+  .keys{
+    display:inline-flex;gap:4px;
+  }
+
+  /* small accents */
+  hr.sep{border:0;border-top:1px solid var(--line);margin:6px 0;}
+
+  /* selection */
+  ::selection{background:var(--amber);color:#000;}
+
+  /* scroll */
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-track{background:var(--bg-1);}
+  ::-webkit-scrollbar-thumb{background:var(--line-2);}
+  ::-webkit-scrollbar-thumb:hover{background:#3a3f44;}
+
+</style>
+</head>
+<body>
+
+<!-- ============= TOP BAR ============= -->
+<header class="topbar">
+  <div class="brand">
+    <div class="mark"></div>
+    <div class="name">KBW<span>//</span>TERMINAL</div>
+    <div class="build">v0.4.1 · BUILD 2604</div>
+  </div>
+
+  <div class="cmdwrap">
+    <div class="cmdline">
+      <span class="prompt">/&gt;</span>
+      <input value="NVDA HOLD ANALYSIS — concentration vs. AI capex cycle" />
+      <span class="caret"></span>
+      <span class="hint">PRESS &nbsp;<span class="kbd">/</span>&nbsp; TO COMMAND &nbsp;·&nbsp; <span class="kbd">G</span><span class="kbd">H</span> HOLDINGS &nbsp;·&nbsp; <span class="kbd">G</span><span class="kbd">E</span> EARNINGS &nbsp;·&nbsp; <span class="kbd">G</span><span class="kbd">A</span> ANALYZE &nbsp;·&nbsp; <span class="kbd">?</span> HELP</span>
+    </div>
+  </div>
+
+  <div class="clock">
+    <span class="dot"></span>
+    <span><span class="lbl">RUH</span> <span class="val">17:42:09</span></span>
+    <span><span class="lbl">NYC</span> <span class="val">10:42:09</span></span>
+    <span class="session-pill">US OPEN · 1H 12M</span>
+  </div>
+
+  <div class="actions">
+    <button>UPLOAD CSV <span class="kbd">U</span></button>
+    <button>EXPORT <span class="kbd">E</span></button>
+    <button class="primary">ANALYZE <span class="kbd">G A</span></button>
+  </div>
+</header>
+
+<!-- ============= TICKER ============= -->
+<div class="ticker">
+  <div class="reel">
+    <span class="tk"><b>NVDA</b> 1,184.21 <span class="up">+2.41%</span></span>
+    <span class="tk"><b>AAPL</b> 234.67 <span class="up">+0.62%</span></span>
+    <span class="tk"><b>MSFT</b> 478.93 <span class="dn">-0.84%</span></span>
+    <span class="tk"><b>2222.SR</b> 7.86 <span class="up">+0.31%</span></span>
+    <span class="tk"><b>BTC-USD</b> 96,442 <span class="dn">-1.18%</span></span>
+    <span class="tk"><b>ETH-USD</b> 3,407 <span class="dn">-2.04%</span></span>
+    <span class="tk"><b>TSLA</b> 358.40 <span class="up">+3.12%</span></span>
+    <span class="tk"><b>META</b> 612.05 <span class="dn">-0.41%</span></span>
+    <span class="tk"><b>GOOGL</b> 198.12 <span class="up">+0.91%</span></span>
+    <span class="tk"><b>AVGO</b> 1,672.19 <span class="up">+1.84%</span></span>
+    <span class="tk"><b>LLY</b> 882.44 <span class="dn">-0.27%</span></span>
+    <span class="tk"><b>COIN</b> 286.31 <span class="up">+4.66%</span></span>
+    <span class="tk"><b>XOM</b> 121.66 <span class="up">+0.18%</span></span>
+    <span class="tk"><b>SPX</b> 5,841.22 <span class="up">+0.34%</span></span>
+    <span class="tk"><b>TASI</b> 12,108.4 <span class="dn">-0.12%</span></span>
+    <span class="tk"><b>DXY</b> 104.87 <span class="up">+0.09%</span></span>
+    <!-- duplicate for seamless reel -->
+    <span class="tk"><b>NVDA</b> 1,184.21 <span class="up">+2.41%</span></span>
+    <span class="tk"><b>AAPL</b> 234.67 <span class="up">+0.62%</span></span>
+    <span class="tk"><b>MSFT</b> 478.93 <span class="dn">-0.84%</span></span>
+    <span class="tk"><b>2222.SR</b> 7.86 <span class="up">+0.31%</span></span>
+    <span class="tk"><b>BTC-USD</b> 96,442 <span class="dn">-1.18%</span></span>
+    <span class="tk"><b>ETH-USD</b> 3,407 <span class="dn">-2.04%</span></span>
+    <span class="tk"><b>TSLA</b> 358.40 <span class="up">+3.12%</span></span>
+    <span class="tk"><b>META</b> 612.05 <span class="dn">-0.41%</span></span>
+    <span class="tk"><b>GOOGL</b> 198.12 <span class="up">+0.91%</span></span>
+    <span class="tk"><b>AVGO</b> 1,672.19 <span class="up">+1.84%</span></span>
+    <span class="tk"><b>LLY</b> 882.44 <span class="dn">-0.27%</span></span>
+    <span class="tk"><b>COIN</b> 286.31 <span class="up">+4.66%</span></span>
+    <span class="tk"><b>XOM</b> 121.66 <span class="up">+0.18%</span></span>
+    <span class="tk"><b>SPX</b> 5,841.22 <span class="up">+0.34%</span></span>
+    <span class="tk"><b>TASI</b> 12,108.4 <span class="dn">-0.12%</span></span>
+    <span class="tk"><b>DXY</b> 104.87 <span class="up">+0.09%</span></span>
+  </div>
+</div>
+
+<!-- ============= TAB STRIP ============= -->
+<div class="tabstrip">
+  <div class="tab on"><span class="num">F1</span> PORTFOLIO</div>
+  <div class="tab"><span class="num">F2</span> POSITIONS</div>
+  <div class="tab"><span class="num">F3</span> EARNINGS</div>
+  <div class="tab"><span class="num">F4</span> NEWS</div>
+  <div class="tab"><span class="num">F5</span> AI ANALYST</div>
+  <div class="tab"><span class="num">F6</span> SCREENER</div>
+  <div class="tab"><span class="num">F7</span> ALERTS <span style="color:var(--amber);font-size:9px;">·3</span></div>
+  <div class="spacer"></div>
+  <div class="right">
+    <span class="chip">ACCT <b>KBW-MASTER · USD</b></span>
+    <span class="chip toggle on" id="liveToggle"><span class="switch"></span> LIVE FEED ±2%</span>
+    <span class="chip">DENSITY <b>COMPACT</b></span>
+  </div>
+</div>
+
+<!-- ============= KPI STRIP ============= -->
+<section class="kpis">
+  <div class="kpi glow">
+    <div class="label"><span>NET LIQUIDATION</span><span class="src">USD</span></div>
+    <div class="v">$24,816,402</div>
+    <div class="sub"><span class="delta up">+$284,118</span><span>D · +1.16%</span></div>
+    <svg class="spark" width="56" height="20" viewBox="0 0 56 20"><polyline fill="none" stroke="#ffb000" stroke-width="1.2" points="0,14 6,12 12,15 18,11 24,12 30,8 36,9 42,5 48,7 56,3"/></svg>
+  </div>
+  <div class="kpi">
+    <div class="label"><span>TOTAL P&amp;L</span><span class="src">UNREAL</span></div>
+    <div class="v up">+$6,142,891</div>
+    <div class="sub"><span class="delta up">+32.85%</span><span>since inception</span></div>
+    <svg class="spark" width="56" height="20" viewBox="0 0 56 20"><polyline fill="none" stroke="#3fcf8e" stroke-width="1.2" points="0,18 8,15 16,16 24,11 32,9 40,10 48,5 56,4"/></svg>
+  </div>
+  <div class="kpi">
+    <div class="label"><span>DAY P&amp;L</span><span class="src">REALTIME</span></div>
+    <div class="v up">+$284,118</div>
+    <div class="sub"><span class="delta up">+1.16%</span><span>vs. SPX +0.34%</span></div>
+    <svg class="spark" width="56" height="20" viewBox="0 0 56 20"><polyline fill="none" stroke="#3fcf8e" stroke-width="1.2" points="0,12 6,14 12,11 18,13 24,10 30,8 36,9 42,6 48,8 56,5"/></svg>
+  </div>
+  <div class="kpi">
+    <div class="label"><span>CASH</span><span class="src">USD+SAR</span></div>
+    <div class="v">$1,487,310</div>
+    <div class="sub"><span class="delta neu">5.99%</span><span>of NLV</span></div>
+    <svg class="spark" width="56" height="20" viewBox="0 0 56 20"><polyline fill="none" stroke="#a9a89f" stroke-width="1.2" points="0,10 8,11 16,10 24,12 32,11 40,11 48,10 56,11"/></svg>
+  </div>
+  <div class="kpi">
+    <div class="label"><span>POSITIONS</span><span class="src">L/S</span></div>
+    <div class="v">14 <span style="color:var(--ink-3);font-size:14px;">/ 5</span></div>
+    <div class="sub"><span class="neu">14 long</span><span>· 5 watch</span></div>
+  </div>
+  <div class="kpi">
+    <div class="label"><span>BETA</span><span class="src">EST · GROUNDED</span></div>
+    <div class="v">1.24</div>
+    <div class="sub"><span class="delta up">+0.18</span><span>vs. SPX</span></div>
+  </div>
+  <div class="kpi">
+    <div class="label"><span>VAR 95% · 1D</span><span class="src">PARAMETRIC</span></div>
+    <div class="v dn">-$612K</div>
+    <div class="sub"><span class="delta neu">2.47%</span><span>of NLV</span></div>
+  </div>
+</section>
+
+<!-- ============= MAIN WORKSPACE ============= -->
+<main class="workspace">
+
+  <!-- ===== NAV PANE ===== -->
+  <aside class="pane nav">
+    <div class="pane-head">
+      <div class="ttl"><span class="n">01</span>WORKSPACE</div>
+      <div class="meta"><span class="led"></span> READY</div>
+    </div>
+    <div class="pane-body">
+      <div class="acct">
+        <div class="row acc"><span>ACCOUNT</span><b>KBW-MASTER</b></div>
+        <div class="row"><span>BASE CCY</span><b>USD</b></div>
+        <div class="row"><span>BROKER</span><b>IBKR · TADAWUL</b></div>
+        <div class="row"><span>SAR FX</span><b>1 USD = 3.7501 SAR</b></div>
+        <div class="row"><span>LAST SYNC</span><b>00:04 AGO</b></div>
+      </div>
+
+      <div class="group">
+        <h4>VIEWS</h4>
+        <div class="item on"><span class="sym">▌</span><span>Portfolio Overview</span><span class="kbdg">G P</span></div>
+        <div class="item"><span class="sym">▌</span><span>Holdings Book</span><span class="kbdg">G H</span></div>
+        <div class="item"><span class="sym">▌</span><span>Watchlist</span><span class="kbdg">G W</span></div>
+        <div class="item"><span class="sym">▌</span><span>Sector / Concentration</span><span class="kbdg">G C</span></div>
+        <div class="item"><span class="sym">▌</span><span>Earnings Calendar</span><span class="kbdg">G E</span></div>
+        <div class="item"><span class="sym">▌</span><span>News Feed</span><span class="kbdg">G N</span></div>
+        <div class="item"><span class="sym">▌</span><span>AI Analyst</span><span class="kbdg">G A</span></div>
+      </div>
+
+      <div class="group">
+        <h4>FILTERS</h4>
+        <div class="item"><span class="sym">·</span><span>US Equities</span><span style="color:var(--ink-3);">11</span></div>
+        <div class="item"><span class="sym">·</span><span>Saudi (TASI)</span><span style="color:var(--ink-3);">1</span></div>
+        <div class="item"><span class="sym">·</span><span>Crypto</span><span style="color:var(--ink-3);">2</span></div>
+        <div class="item"><span class="sym">·</span><span>Overweight (&gt;15%)</span><span style="color:var(--red);">2</span></div>
+        <div class="item"><span class="sym">·</span><span>Earnings &lt;7d</span><span style="color:var(--amber);">4</span></div>
+      </div>
+
+      <div class="group">
+        <h4>API</h4>
+        <div class="item"><span class="sym">●</span><span style="color:var(--ink-3);">GEMINI</span><span style="color:var(--green);">CONNECTED</span></div>
+        <div class="item"><span class="sym">●</span><span style="color:var(--ink-3);">GOOGLE SEARCH</span><span style="color:var(--green);">GROUNDED</span></div>
+        <div class="item"><span class="sym">○</span><span style="color:var(--ink-3);">CSV SOURCE</span><span style="color:var(--ink-2);">portfolio.csv</span></div>
+      </div>
+
+      <div class="upload">
+        DRAG · DROP · CSV
+        <b>or click to upload portfolio.csv</b>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== TABLE PANE ===== -->
+  <section class="pane tablepane">
+    <div class="pane-head">
+      <div class="ttl"><span class="n">02</span>HOLDINGS BOOK</div>
+      <div class="meta">
+        <span class="led"></span>
+        STREAM · 14 ROWS · 04:21:18 LAG 38ms
+      </div>
+    </div>
+
+    <div class="tabsubhead">
+      <div class="seg on">HOLDINGS <span class="ct">14</span></div>
+      <div class="seg">WATCHLIST <span class="ct">5</span></div>
+      <div class="seg">CLOSED <span class="ct">22</span></div>
+      <div class="filter">
+        <span style="color:var(--amber);">⌕</span>
+        <input placeholder="filter symbol / sector  ·  e.g. NVDA  >5%  sector:tech" />
+        <span class="kbd">CTRL + F</span>
+      </div>
+      <div class="right">
+        <span>SORT <b>WEIGHT ↓</b></span>
+        <span>GROUP <b>NONE</b></span>
+        <span>VIEW <b>FULL</b></span>
+      </div>
+    </div>
+
+    <div class="pane-body">
+      <table class="book">
+        <thead>
+          <tr>
+            <th class="l">SYM</th>
+            <th class="l">SECTOR</th>
+            <th>QTY</th>
+            <th>AVG COST</th>
+            <th>LAST</th>
+            <th>DAY %</th>
+            <th class="s">5D SPARK</th>
+            <th>MKT VALUE</th>
+            <th>WEIGHT % <span class="arr">↓</span></th>
+            <th>UNREAL P&amp;L</th>
+            <th>P&amp;L %</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- NVDA -->
+          <tr class="flag">
+            <td class="l sym">NVDA<span class="sub">NVIDIA CORP · NASDAQ</span></td>
+            <td class="l"><span class="pill tech">TECHNOLOGY</span></td>
+            <td>3,400</td>
+            <td>684.20</td>
+            <td>1,184.21</td>
+            <td class="up">+2.41%</td>
+            <td class="spark"><svg width="60" height="18" viewBox="0 0 60 18"><polyline fill="none" stroke="#3fcf8e" stroke-width="1.1" points="0,12 8,11 16,13 24,9 32,8 40,10 48,5 60,3"/></svg></td>
+            <td>4,026,314</td>
+            <td><div class="wbar"><div class="b over"><i style="width:81%"></i></div><span class="v">16.22%</span></div></td>
+            <td class="up">+1,700,634</td>
+            <td class="up">+73.06%</td>
+          </tr>
+
+          <!-- AAPL -->
+          <tr>
+            <td class="l sym">AAPL<span class="sub">APPLE INC · NASDAQ</span></td>
+            <td class="l"><span class="pill tech">TECHNOLOGY</span></td>
+            <td>14,000</td>
+            <td>176.40</td>
+            <td>234.67</td>
+            <td class="up">+0.62%</td>
+            <td class="spark"><svg width="60" height="18" viewBox="0 0 60 18"><polyline fill="none" stroke="#3fcf8e" stroke-width="1.1" points="0,11 8,12 16,9 24,11 32,8 40,9 48,7 60,6"/></svg></td>
+            <td>3,285,380</td>
+            <td><div class="wbar"><div class="b"><i style="width:66%"></i></div><span class="v">13.24%</span></div></td>
+            <td class="up">+815,780</td>
+            <td class="up">+33.03%</td>
+          </tr>
+
+          <!-- 2222.SR -->
+          <tr>
+            <td class="l sym">2222.SR<span class="sub">SAUDI ARAMCO · TADAWUL</span></td>
+            <td class="l"><span class="pill ene">ENERGY</span></td>
+            <td>340,000</td>
+            <td>7.21</td>
+            <td>7.86</td>
+            <td class="up">+0.31%</td>
+            <td class="spark"><svg width="60" height="18" viewBox="0 0 60 18"><polyline fill="none" stroke="#3fcf8e" stroke-width="1.1" points="0,11 8,12 16,11 24,12 32,10 40,9 48,9 60,8"/></svg></td>
+            <td>2,672,400</td>
+            <td><div class="wbar"><div class="b"><i style="width:54%"></i></div><span class="v">10.77%</span></div></td>
+            <td class="up">+221,000</td>
+            <td class="up">+9.01%</td>
+          </tr>
+
+          <!-- MSFT -->
+          <tr>
+            <td class="l sym">MSFT<span class="sub">MICROSOFT CORP · NASDAQ</span></td>
+            <td class="l"><span class="pill tech">TECHNOLOGY</span></td>
+            <td>5,200</td>
+            <td>312.80</td>
+            <td>478.93</td>
+            <td class="dn">−0.84%</td>
+            <td class="spark"><svg width="60" height="18" viewBox="0 0 60 18"><polyline fill="none" stroke="#ff5d5d" stroke-width="1.1" points="0,8 8,7 16,9 24,8 32,10 40,11 48,12 60,13"/></svg></td>
+            <td>2,490,436</td>
+            <td><div class="wbar"><div class="b"><i style="width:50%"></i></div><span class="v">10.04%</span></div></td>
+            <td class="up">+863,876</td>
+            <td class="up">+53.10%</td>
+          </tr>
+
+          <!-- BTC -->
+          <tr>
+            <td class="l sym">BTC-USD<span class="sub">BITCOIN · COINBASE</span></td>
+            <td class="l"><span class="pill cry">CRYPTO</span></td>
+            <td>22.40</td>
+            <td>52,210</td>
+            <td>96,442</td>
+            <td class="dn">−1.18%</td>
+            <td class="spark"><svg width="60" height="18" viewBox="0 0 60 18"><polyline fill="none" stroke="#3fcf8e" stroke-width="1.1" points="0,12 8,10 16,11 24,8 32,9 40,7 48,8 60,6"/></svg></td>
+            <td>2,160,300</td>
+            <td><div class="wbar"><div class="b"><i style="width:43%"></i></div><span class="v">8.71%</span></div></td>
+            <td class="up">+991,196</td>
+            <td class="up">+84.74%</td>
+          </tr>
+
+          <!-- AVGO -->
+          <tr>
+            <td class="l sym">AVGO<span class="sub">BROADCOM INC · NASDAQ</span></td>
+            <td class="l"><span class="pill tech">TECHNOLOGY</span></td>
+            <td>1,150</td>
+            <td>1,142.10</td>
+            <td>1,672.19</td>
+            <td class="up">+1.84%</td>
+            <td class="spark"><svg width="60" height="18" viewBox="0 0 60 18"><polyline fill="none" stroke="#3fcf8e" stroke-width="1.1" points="0,13 8,12 16,10 24,11 32,8 40,7 48,6 60,4"/></svg></td>
+            <td>1,923,019</td>
+            <td><div class="wbar"><div class="b"><i style="width:39%"></i></div><span class="v">7.75%</span></div></td>
+            <td class="up">+609,604</td>
+            <td class="up">+46.40%</td>
+          </tr>
+
+          <!-- GOOGL -->
+          <tr>
+            <td class="l sym">GOOGL<span class="sub">ALPHABET A · NASDAQ</span></td>
+            <td class="l"><span class="pill com">COMMUNICATION</span></td>
+            <td>9,200</td>
+            <td>134.50</td>
+            <td>198.12</td>
+            <td class="up">+0.91%</td>
+            <td class="spark"><svg width="60" height="18" viewBox="0 0 60 18"><polyline fill="none" stroke="#3fcf8e" stroke-width="1.1" points="0,11 8,10 16,12 24,9 32,8 40,8 48,7 60,6"/></svg></td>
+            <td>1,822,704</td>
+            <td><div class="wbar"><div class="b"><i style="width:37%"></i></div><span class="v">7.34%</span></div></td>
+            <td class="up">+585,304</td>
+            <td class="up">+47.30%</td>
+          </tr>
+
+          <!-- LLY -->
+          <tr>
+            <td class="l sym">LLY<span class="sub">ELI LILLY &amp; CO · NYSE</span></td>
+            <td class="l"><span class="pill hea">HEALTHCARE</span></td>
+            <td>1,650</td>
+            <td>740.10</td>
+            <td>882.44</td>
+            <td class="dn">−0.27%</td>
+            <td class="spark"><svg width="60" height="18" viewBox="0 0 60 18"><polyline fill="none" stroke="#a9a89f" stroke-width="1.1" points="0,9 8,8 16,9 24,10 32,9 40,10 48,11 60,11"/></svg></td>
+            <td>1,456,026</td>
+            <td><div class="wbar"><div class="b"><i style="width:30%"></i></div><span class="v">5.86%</span></div></td>
+            <td class="up">+234,861</td>
+            <td class="up">+19.23%</td>
+          </tr>
+
+          <!-- TSLA -->
+          <tr>
+            <td class="l sym">TSLA<span class="sub">TESLA INC · NASDAQ</span></td>
+            <td class="l"><span class="pill con">AUTOMOTIVE</span></td>
+            <td>3,800</td>
+            <td>241.20</td>
+            <td>358.40</td>
+            <td class="up">+3.12%</td>
+            <td class="spark"><svg width="60" height="18" viewBox="0 0 60 18"><polyline fill="none" stroke="#3fcf8e" stroke-width="1.1" points="0,15 8,12 16,13 24,10 32,11 40,7 48,8 60,4"/></svg></td>
+            <td>1,361,920</td>
+            <td><div class="wbar"><div class="b"><i style="width:27%"></i></div><span class="v">5.49%</span></div></td>
+            <td class="up">+445,360</td>
+            <td class="up">+48.59%</td>
+          </tr>
+
+          <!-- META -->
+          <tr>
+            <td class="l sym">META<span class="sub">META PLATFORMS · NASDAQ</span></td>
+            <td class="l"><span class="pill com">COMMUNICATION</span></td>
+            <td>2,100</td>
+            <td>421.40</td>
+            <td>612.05</td>
+            <td class="dn">−0.41%</td>
+            <td class="spark"><svg width="60" height="18" viewBox="0 0 60 18"><polyline fill="none" stroke="#a9a89f" stroke-width="1.1" points="0,8 8,9 16,8 24,10 32,9 40,10 48,11 60,11"/></svg></td>
+            <td>1,285,305</td>
+            <td><div class="wbar"><div class="b"><i style="width:26%"></i></div><span class="v">5.18%</span></div></td>
+            <td class="up">+400,365</td>
+            <td class="up">+45.25%</td>
+          </tr>
+
+          <!-- ETH -->
+          <tr>
+            <td class="l sym">ETH-USD<span class="sub">ETHEREUM · COINBASE</span></td>
+            <td class="l"><span class="pill cry">CRYPTO</span></td>
+            <td>340</td>
+            <td>2,140</td>
+            <td>3,407</td>
+            <td class="dn">−2.04%</td>
+            <td class="spark"><svg width="60" height="18" viewBox="0 0 60 18"><polyline fill="none" stroke="#ff5d5d" stroke-width="1.1" points="0,7 8,8 16,9 24,10 32,9 40,11 48,12 60,14"/></svg></td>
+            <td>1,158,380</td>
+            <td><div class="wbar"><div class="b"><i style="width:23%"></i></div><span class="v">4.67%</span></div></td>
+            <td class="up">+430,780</td>
+            <td class="up">+59.20%</td>
+          </tr>
+
+          <!-- JPM -->
+          <tr>
+            <td class="l sym">JPM<span class="sub">JPMORGAN CHASE · NYSE</span></td>
+            <td class="l"><span class="pill fin">FINANCIAL</span></td>
+            <td>4,400</td>
+            <td>176.10</td>
+            <td>241.18</td>
+            <td class="up">+0.74%</td>
+            <td class="spark"><svg width="60" height="18" viewBox="0 0 60 18"><polyline fill="none" stroke="#3fcf8e" stroke-width="1.1" points="0,11 8,10 16,11 24,9 32,9 40,8 48,7 60,7"/></svg></td>
+            <td>1,061,192</td>
+            <td><div class="wbar"><div class="b"><i style="width:21%"></i></div><span class="v">4.27%</span></div></td>
+            <td class="up">+286,372</td>
+            <td class="up">+36.96%</td>
+          </tr>
+
+          <!-- COIN -->
+          <tr class="flag-red">
+            <td class="l sym">COIN<span class="sub">COINBASE GLOBAL · NASDAQ</span></td>
+            <td class="l"><span class="pill fin">FINANCIAL</span></td>
+            <td>2,400</td>
+            <td>312.50</td>
+            <td>286.31</td>
+            <td class="up">+4.66%</td>
+            <td class="spark"><svg width="60" height="18" viewBox="0 0 60 18"><polyline fill="none" stroke="#ff5d5d" stroke-width="1.1" points="0,9 8,11 16,10 24,12 32,11 40,9 48,7 60,4"/></svg></td>
+            <td>687,144</td>
+            <td><div class="wbar"><div class="b"><i style="width:14%"></i></div><span class="v">2.77%</span></div></td>
+            <td class="dn">−62,856</td>
+            <td class="dn">−8.38%</td>
+          </tr>
+
+          <!-- XOM -->
+          <tr>
+            <td class="l sym">XOM<span class="sub">EXXON MOBIL · NYSE</span></td>
+            <td class="l"><span class="pill ene">ENERGY</span></td>
+            <td>5,800</td>
+            <td>108.40</td>
+            <td>121.66</td>
+            <td class="up">+0.18%</td>
+            <td class="spark"><svg width="60" height="18" viewBox="0 0 60 18"><polyline fill="none" stroke="#a9a89f" stroke-width="1.1" points="0,10 8,11 16,10 24,11 32,10 40,9 48,10 60,9"/></svg></td>
+            <td>705,628</td>
+            <td><div class="wbar"><div class="b"><i style="width:14%"></i></div><span class="v">2.84%</span></div></td>
+            <td class="up">+76,908</td>
+            <td class="up">+12.23%</td>
+          </tr>
+
+        </tbody>
+        <tfoot>
+          <tr style="border-top:1px solid var(--line-2);background:var(--bg-0);color:var(--ink-2);">
+            <td class="l" style="padding:8px 10px;letter-spacing:.18em;font-size:10px;color:var(--ink-3);">TOTAL · 14 POSITIONS</td>
+            <td></td><td></td><td></td><td></td>
+            <td class="up">+0.93%</td>
+            <td></td>
+            <td style="padding:8px 10px;font-weight:600;">23,329,148</td>
+            <td style="padding:8px 10px;"><div class="wbar"><div class="b"><i style="width:94%;background:var(--ink-2)"></i></div><span class="v">94.01%</span></div></td>
+            <td class="up" style="padding:8px 10px;font-weight:600;">+6,142,891</td>
+            <td class="up" style="padding:8px 10px;font-weight:600;">+35.74%</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== AI ANALYST PANE ===== -->
+  <section class="pane ai">
+    <div class="pane-head">
+      <div class="ttl"><span class="n">03</span>AI ANALYST</div>
+      <div class="meta">GEMINI 3-FLASH · GROUNDED</div>
+    </div>
+    <div class="ai-body">
+      <div class="stage">
+        <h5>RISK SCORE <span class="tok">~ 1,284 tok</span></h5>
+        <div class="verdict"><span class="score">62</span><span>MODERATE-HIGH</span><span class="lbl">/ 100</span></div>
+        <div class="sub" style="font-size:10.5px;color:var(--ink-3);margin-top:6px;letter-spacing:.04em;">
+          driven by <b style="color:var(--ink);">tech concentration 47%</b>, <b style="color:var(--ink);">single-name NVDA 16.22%</b>, beta 1.24
+        </div>
+      </div>
+
+      <div class="stage">
+        <h5>FINDINGS <span class="tok">5 of 12</span></h5>
+        <ul class="bullets">
+          <li><span class="tag r">CONCENTRATION</span> <b>NVDA at 16.22%</b> exceeds 15% single-name limit. Trim 70–110bps to rebalance.</li>
+          <li><span class="tag r">SECTOR</span> Technology block <b>47.3%</b> — 220bps above target. Hedge or rotate into healthcare/energy.</li>
+          <li><span class="tag g">QUALITY</span> Top 5 weighted positions all <b>profit-taking</b> (>30% gain). Consider laddered trims.</li>
+          <li><span class="tag">MACRO</span> Two crypto positions = <b>13.4% NLV</b> — fine tactically, oversized strategically.</li>
+          <li><span class="tag">CATALYST</span> Four earnings within 7 days; <b>NVDA, AAPL, GOOGL, COIN</b>. NVDA carries largest delta risk.</li>
+        </ul>
+      </div>
+
+      <div class="stage" style="border-bottom:0;">
+        <h5>SUGGESTED ACTIONS</h5>
+        <ul class="bullets">
+          <li><span class="tag g">SELL</span> <b>NVDA −300sh</b> at market — reduce weight to 14.7%.</li>
+          <li><span class="tag g">BUY</span> <b>LLY +600sh</b> — bring healthcare to 7.5% target.</li>
+          <li><span class="tag">SET</span> <b>Stop on COIN @ 268</b> — only red P&amp;L, momentum reversing.</li>
+        </ul>
+      </div>
+
+      <div class="ask">
+        <span class="pmt">?&gt;</span>
+        <input placeholder="ask Gemini · e.g. 'stress-test 20% tech drawdown'" />
+        <button class="send">SEND ⏎</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTOR PANE (treemap) ===== -->
+  <section class="pane sect">
+    <div class="pane-head">
+      <div class="ttl"><span class="n">04</span>SECTOR ALLOCATION</div>
+      <div class="meta">% OF NLV · NET</div>
+    </div>
+    <div class="pane-body">
+      <div class="sect-body">
+        <!-- 6x6 grid of cells, sizes via grid-column/row-span representing weights -->
+        <div class="cell tech" style="grid-column:span 4;grid-row:span 3;">
+          <div class="lab">TECHNOLOGY</div>
+          <div class="val"><span><b>47.25%</b></span><span class="pl up">+12.84M · +28.6%</span></div>
+        </div>
+        <div class="cell ene" style="grid-column:span 2;grid-row:span 2;">
+          <div class="lab">ENERGY</div>
+          <div class="val"><span><b>13.61%</b></span><span class="pl up">+0.30M · +9.7%</span></div>
+        </div>
+        <div class="cell com" style="grid-column:span 2;grid-row:span 2;">
+          <div class="lab">COMMUNICATION</div>
+          <div class="val"><span><b>12.52%</b></span><span class="pl up">+0.99M · +46.1%</span></div>
+        </div>
+        <div class="cell cry" style="grid-column:span 2;grid-row:span 2;">
+          <div class="lab">CRYPTO</div>
+          <div class="val"><span><b>13.38%</b></span><span class="pl up">+1.42M · +73.2%</span></div>
+        </div>
+        <div class="cell hea" style="grid-column:span 2;grid-row:span 1;">
+          <div class="lab">HEALTHCARE</div>
+          <div class="val"><span><b>5.86%</b></span><span class="pl up">+0.23M</span></div>
+        </div>
+        <div class="cell con" style="grid-column:span 2;grid-row:span 1;">
+          <div class="lab">AUTOMOTIVE</div>
+          <div class="val"><span><b>5.49%</b></span><span class="pl up">+0.45M</span></div>
+        </div>
+        <div class="cell fin" style="grid-column:span 2;grid-row:span 1;">
+          <div class="lab">FINANCIAL</div>
+          <div class="val"><span><b>7.04%</b></span><span class="pl up">+0.22M</span></div>
+        </div>
+        <div class="cell" style="grid-column:span 1;grid-row:span 1;background:var(--bg-2);">
+          <div class="lab">CASH</div>
+          <div class="val"><span><b>5.99%</b></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== NEWS ===== -->
+  <section class="pane news" style="grid-row:span 2;">
+    <div class="pane-head">
+      <div class="ttl"><span class="n">05</span>MARKET NEWS · GEMINI + GOOGLE SEARCH</div>
+      <div class="meta">AUTO · 30s</div>
+    </div>
+    <div class="pane-body news-body">
+      <div class="item">
+        <div class="ts">10:38<br><span class="src">REUTERS</span></div>
+        <div class="body">
+          <span class="tk up">NVDA</span> <b>Nvidia Q4 capex guidance lifts AI hyperscaler peers</b>; AVGO and MSFT extend gains in pre-earnings tape.
+          <span class="meta">grounded · 3 sources · reuters.com · cnbc.com · ft.com</span>
+        </div>
+      </div>
+      <div class="item">
+        <div class="ts">10:31<br><span class="src">BLOOMBERG</span></div>
+        <div class="body">
+          <span class="tk dn">ETH</span> <b>Ethereum slips 2% as Layer-2 fee debate reignites</b>; BTC tracks lower in sympathy ahead of US CPI print Friday.
+          <span class="meta">grounded · 2 sources · bloomberg.com · coindesk.com</span>
+        </div>
+      </div>
+      <div class="item">
+        <div class="ts">10:24<br><span class="src">WSJ</span></div>
+        <div class="body">
+          <span class="tk">2222.SR</span> <b>Aramco signals 2026 dividend stability</b> at investor day in Riyadh; oil holds $84 on inventory draw.
+          <span class="meta">grounded · 2 sources · wsj.com · argaam.com</span>
+        </div>
+      </div>
+      <div class="item">
+        <div class="ts">10:11<br><span class="src">FT</span></div>
+        <div class="body">
+          <span class="tk up">TSLA</span> <b>Tesla deliveries beat in EU; Cybertruck refresh teased</b>. Sell-side updates lifting near-term price targets to $410 avg.
+          <span class="meta">grounded · 4 sources · ft.com · electrek.co · reuters.com · bbg</span>
+        </div>
+      </div>
+      <div class="item">
+        <div class="ts">09:58<br><span class="src">CNBC</span></div>
+        <div class="body">
+          <span class="tk up">COIN</span> <b>Coinbase upgraded to Buy at MS</b> on revived spot-ETF flows; rebound takes a bite out of YTD drawdown.
+          <span class="meta">grounded · 2 sources · cnbc.com · barrons.com</span>
+        </div>
+      </div>
+      <div class="item">
+        <div class="ts">09:46<br><span class="src">REUTERS</span></div>
+        <div class="body">
+          <span class="tk dn">META</span> <b>FTC re-opens privacy probe into Meta data partnerships</b>; sentiment cools after recent rally.
+          <span class="meta">grounded · 3 sources · reuters.com · politico.com · ft.com</span>
+        </div>
+      </div>
+      <div class="item">
+        <div class="ts">09:33<br><span class="src">BBG</span></div>
+        <div class="body">
+          <span class="tk">XOM</span> <b>Exxon weighs $5B Guyana expansion</b>; cash flow cushion supports buyback pace through FY27.
+          <span class="meta">grounded · 2 sources · bloomberg.com · oilprice.com</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONCENTRATION ===== -->
+  <section class="pane conc">
+    <div class="pane-head">
+      <div class="ttl"><span class="n">06</span>CONCENTRATION · TOP 10</div>
+      <div class="meta">LIMIT 15% · LIMITS 2 BREACH</div>
+    </div>
+    <div class="pane-body">
+      <div class="conc-body">
+        <div class="conc-row over"><span class="s">NVDA</span><div class="meter"><i style="width:108%"></i></div><span class="w">16.22% <span class="flag-tag">⚠ OVER</span></span><span class="pl up">+73.06%</span></div>
+        <div class="conc-row"><span class="s">AAPL</span><div class="meter"><i style="width:88%"></i></div><span class="w">13.24%</span><span class="pl up">+33.03%</span></div>
+        <div class="conc-row"><span class="s">2222</span><div class="meter"><i style="width:71%"></i></div><span class="w">10.77%</span><span class="pl up">+9.01%</span></div>
+        <div class="conc-row"><span class="s">MSFT</span><div class="meter"><i style="width:67%"></i></div><span class="w">10.04%</span><span class="pl up">+53.10%</span></div>
+        <div class="conc-row"><span class="s">BTC</span><div class="meter"><i style="width:58%"></i></div><span class="w">8.71%</span><span class="pl up">+84.74%</span></div>
+        <div class="conc-row"><span class="s">AVGO</span><div class="meter"><i style="width:51%"></i></div><span class="w">7.75%</span><span class="pl up">+46.40%</span></div>
+        <div class="conc-row"><span class="s">GOOGL</span><div class="meter"><i style="width:48%"></i></div><span class="w">7.34%</span><span class="pl up">+47.30%</span></div>
+        <div class="conc-row"><span class="s">LLY</span><div class="meter"><i style="width:39%"></i></div><span class="w">5.86%</span><span class="pl up">+19.23%</span></div>
+        <div class="conc-row"><span class="s">TSLA</span><div class="meter"><i style="width:36%"></i></div><span class="w">5.49%</span><span class="pl up">+48.59%</span></div>
+        <div class="conc-row"><span class="s">META</span><div class="meter"><i style="width:34%"></i></div><span class="w">5.18%</span><span class="pl up">+45.25%</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== EARNINGS ===== -->
+  <section class="pane earn" style="border-bottom:0;">
+    <div class="pane-head">
+      <div class="ttl"><span class="n">07</span>EARNINGS CALENDAR</div>
+      <div class="meta">GEMINI · GROUNDED · CACHED 6m</div>
+    </div>
+    <div class="pane-body">
+      <table>
+        <thead>
+          <tr>
+            <th>SYM</th>
+            <th>WHEN</th>
+            <th>EST EPS</th>
+            <th>ACTUAL</th>
+            <th>EST REV</th>
+            <th>STATUS</th>
+            <th class="r">SOURCE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>NVDA</b><span class="sub">in 3d · post-mkt</span></td>
+            <td>WED 30 APR<span class="sub">22:20 UTC</span></td>
+            <td>$0.74</td>
+            <td><span class="badge upc">UPCOMING</span></td>
+            <td>$24.6B</td>
+            <td><span class="badge line">GUIDE-CRITICAL</span></td>
+            <td class="r ststamp">G · 5 sources<br>10:39 UTC</td>
+          </tr>
+          <tr>
+            <td><b>AAPL</b><span class="sub">in 6d · post-mkt</span></td>
+            <td>SAT 03 MAY<span class="sub">21:30 UTC</span></td>
+            <td>$1.41</td>
+            <td><span class="badge upc">UPCOMING</span></td>
+            <td>$94.5B</td>
+            <td><span class="badge line">SERVICES-FOCUS</span></td>
+            <td class="r ststamp">G · 4 sources<br>10:38 UTC</td>
+          </tr>
+          <tr>
+            <td><b>GOOGL</b><span class="sub">reported · 22 APR</span></td>
+            <td>TUE 22 APR<span class="sub">20:05 UTC</span></td>
+            <td>$1.84</td>
+            <td><b style="color:var(--green);">$1.91</b><span class="sub" style="color:var(--green);">+3.8% surprise</span></td>
+            <td>$87.1B</td>
+            <td><span class="badge beat">BEAT</span></td>
+            <td class="r ststamp">G · 6 sources<br>22 APR</td>
+          </tr>
+          <tr>
+            <td><b>COIN</b><span class="sub">in 9d · post-mkt</span></td>
+            <td>TUE 06 MAY<span class="sub">21:00 UTC</span></td>
+            <td>$0.92</td>
+            <td><span class="badge upc">UPCOMING</span></td>
+            <td>$1.84B</td>
+            <td><span class="badge line">VOLATILE</span></td>
+            <td class="r ststamp">G · 3 sources<br>10:33 UTC</td>
+          </tr>
+          <tr>
+            <td><b>META</b><span class="sub">reported · 23 APR</span></td>
+            <td>WED 23 APR<span class="sub">20:05 UTC</span></td>
+            <td>$5.20</td>
+            <td><b style="color:var(--red);">$4.97</b><span class="sub" style="color:var(--red);">−4.4% surprise</span></td>
+            <td>$42.3B</td>
+            <td><span class="badge miss">MISS</span></td>
+            <td class="r ststamp">G · 5 sources<br>23 APR</td>
+          </tr>
+          <tr>
+            <td><b>TSLA</b><span class="sub">reported · 21 APR</span></td>
+            <td>MON 21 APR<span class="sub">20:00 UTC</span></td>
+            <td>$0.61</td>
+            <td><b style="color:var(--green);">$0.66</b><span class="sub" style="color:var(--green);">+8.2% surprise</span></td>
+            <td>$24.9B</td>
+            <td><span class="badge beat">BEAT</span></td>
+            <td class="r ststamp">G · 4 sources<br>21 APR</td>
+          </tr>
+          <tr>
+            <td><b>2222.SR</b><span class="sub">in 14d · pre-mkt</span></td>
+            <td>SUN 11 MAY<span class="sub">07:00 UTC</span></td>
+            <td>SAR 0.34</td>
+            <td><span class="badge upc">UPCOMING</span></td>
+            <td>SAR 412B</td>
+            <td><span class="badge line">DIV-WATCH</span></td>
+            <td class="r ststamp">G · 3 sources<br>10:21 UTC</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============= STATUS BAR ============= -->
+<footer class="statusbar">
+  <div class="seg"><span class="led"></span> <b>READY</b></div>
+  <div class="seg">CSV <b>portfolio.csv</b> · 14+5 ROWS</div>
+  <div class="seg">FX <b>USD/SAR 3.7501</b></div>
+  <div class="seg" style="color:var(--ink-3);">
+    <span class="keys"><span class="kbd">/</span> COMMAND</span> &nbsp; · &nbsp;
+    <span class="keys"><span class="kbd">G</span><span class="kbd">H</span> HOLDINGS</span> &nbsp; · &nbsp;
+    <span class="keys"><span class="kbd">G</span><span class="kbd">E</span> EARNINGS</span> &nbsp; · &nbsp;
+    <span class="keys"><span class="kbd">G</span><span class="kbd">A</span> ANALYZE</span> &nbsp; · &nbsp;
+    <span class="keys"><span class="kbd">⌘</span><span class="kbd">K</span> SEARCH</span> &nbsp; · &nbsp;
+    <span class="keys"><span class="kbd">L</span> LIVE TOGGLE</span> &nbsp; · &nbsp;
+    <span class="keys"><span class="kbd">?</span> HELP</span>
+  </div>
+  <div class="seg r"><span class="led amb"></span> GEMINI <b>1.2k tok / sess</b></div>
+  <div class="seg r"><span class="led"></span> STREAM <b>38ms</b></div>
+  <div class="seg r">© KBW VENTURES · TERMINAL <b>v0.4.1</b></div>
+</footer>
+
+<script>
+  // Live ticking clock
+  function pad(n){return n<10?'0'+n:n}
+  function tick(){
+    const ruh = document.querySelector('.clock .val');
+    const valEls = document.querySelectorAll('.clock .val');
+    const now = new Date();
+    // RUH = UTC+3
+    const ruhT = new Date(now.getTime() + (3*3600*1000) + (now.getTimezoneOffset()*60000));
+    // NYC = UTC-4 (DST approx)
+    const nycT = new Date(now.getTime() - (4*3600*1000) + (now.getTimezoneOffset()*60000));
+    if(valEls[0]) valEls[0].textContent = pad(ruhT.getHours())+':'+pad(ruhT.getMinutes())+':'+pad(ruhT.getSeconds());
+    if(valEls[1]) valEls[1].textContent = pad(nycT.getHours())+':'+pad(nycT.getMinutes())+':'+pad(nycT.getSeconds());
+  }
+  setInterval(tick,1000); tick();
+
+  // Live toggle
+  const lt = document.getElementById('liveToggle');
+  if(lt){ lt.addEventListener('click', ()=> lt.classList.toggle('on')); }
+
+  // simulated price flash on a few cells every few seconds
+  const flashCells = ()=>{
+    const upPct = document.querySelectorAll('table.book tbody td:nth-child(6)');
+    upPct.forEach((td,i)=>{
+      if(Math.random()<0.18){
+        const orig = td.style.background;
+        td.style.background = td.classList.contains('up') ? 'rgba(63,207,142,.18)' : 'rgba(255,93,93,.18)';
+        setTimeout(()=>{td.style.background = orig||'';}, 380);
+      }
+    });
+  };
+  setInterval(flashCells, 1600);
+</script>
+
+</body>
+</html>

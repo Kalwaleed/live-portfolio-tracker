@@ -23,3 +23,6 @@ firebase-debug.log
 
 # Vite
 *.local
+
+# Claude Code session state
+.claude/

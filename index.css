@@ -1,85 +1,93 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+@import 'tailwindcss';
 
-@font-face {
-  font-family: 'Sentient';
-  src: url('/fonts/Sentient-Extralight.woff') format('woff');
-  font-weight: 200;
-  font-style: normal;
-  font-display: swap;
+@theme {
+  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
+  --font-sans: 'IBM Plex Sans', -apple-system, system-ui, sans-serif;
+
+  --color-bg-0: #070808;
+  --color-bg-1: #0c0d0d;
+  --color-bg-2: #131414;
+  --color-bg-3: #1a1b1b;
+
+  --color-ink: #e7e5dd;
+  --color-ink-2: #b9b6ab;
+  --color-ink-3: #6c6a62;
+  --color-ink-4: #3d3c38;
+
+  --color-line: rgba(231, 229, 221, 0.08);
+  --color-line-2: rgba(231, 229, 221, 0.16);
+
+  --color-amber: #ffb000;
+  --color-amber-dim: #b07a00;
+  --color-green: #3fcf8e;
+  --color-red: #ff5d5d;
+  --color-violet: #b48cff;
 }
 
-@font-face {
-  font-family: 'Sentient';
-  src: url('/fonts/Sentient-LightItalic.woff') format('woff');
-  font-weight: 300;
-  font-style: italic;
-  font-display: swap;
-}
+* { box-sizing: border-box; }
 
-:root {
-  --background: #000000;
-  --foreground: #ffffff;
-  --primary: #FF8C00;
-  --primary-foreground: #ffffff;
-  --border: #424242;
-  --shadow-glow: 0 0 8px 2px var(--tw-shadow-color);
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: 'Geist Mono', monospace;
-}
-
-#webgl {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100svh;
-  z-index: 0;
-}
-
-#webgl canvas {
-  width: 100%;
+html, body, #root {
+  margin: 0;
+  padding: 0;
   height: 100%;
+  background: var(--color-bg-0);
+  color: var(--color-ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'tnum' on, 'lnum' on;
 }
 
-/* Custom Scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(231, 229, 221, 0) 0px,
+    rgba(231, 229, 221, 0) 2px,
+    rgba(231, 229, 221, 0.012) 3px,
+    rgba(231, 229, 221, 0) 4px
+  );
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: #0F0F0F;
-  border-radius: 3px;
+body::after {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  background: radial-gradient(ellipse 60% 30% at 50% 0%, rgba(255, 176, 0, 0.06), transparent 70%);
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #3A3028;
-  border-radius: 3px;
-  transition: background 0.2s;
-}
+button { font-family: inherit; cursor: pointer; }
+input, textarea, select { font-family: inherit; }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #5A4838;
-}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--color-bg-1); }
+::-webkit-scrollbar-thumb { background: var(--color-ink-4); }
+::-webkit-scrollbar-thumb:hover { background: var(--color-ink-3); }
 
-/* Scale animation */
-@keyframes scale-in {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+@keyframes blink {
+  0%, 60% { opacity: 1; }
+  61%, 100% { opacity: 0; }
 }
-
-.animate-scale-in {
-  animation: scale-in 0.3s ease-out;
+@keyframes flash-up {
+  0% { background-color: rgba(63, 207, 142, 0.25); }
+  100% { background-color: transparent; }
 }
+@keyframes flash-down {
+  0% { background-color: rgba(255, 93, 93, 0.25); }
+  100% { background-color: transparent; }
+}
+@keyframes ticker-slide {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.caret-blink { animation: blink 1s step-end infinite; }
+.flash-up { animation: flash-up 1.4s ease-out; }
+.flash-down { animation: flash-down 1.4s ease-out; }
+.ticker-slide { animation: ticker-slide 60s linear infinite; }
+.pulse-dot { animation: pulse-dot 1.6s ease-in-out infinite; }
