@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
-import { PortfolioItem } from '../../types';
+import { PricedHolding } from '../../types';
 import { cls, fmtPct, fmtUsd, plClass } from '../../utils/format';
 
-interface Props { holdings: PortfolioItem[]; totalNlv: number; }
+interface Props { holdings: PricedHolding[]; totalNlv: number; }
 
 interface Tile { sector: string; mv: number; pl: number; weight: number; symbols: string[]; }
 

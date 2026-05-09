@@ -1,9 +1,9 @@
 import React from 'react';
-import { PortfolioItem } from '../../types';
+import { PricedHolding } from '../../types';
 import { fmtPct, fmtUsd, plClass, cls } from '../../utils/format';
 
 interface Props {
-  holdings: PortfolioItem[];
+  holdings: PricedHolding[];
   isLive: boolean;
 }
 

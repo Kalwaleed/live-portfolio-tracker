@@ -126,7 +126,7 @@ const AiPanel: React.FC<Props> = ({ analysis, analyzing, hasApiKey, hasHoldings,
             </div>
 
             <div className="text-[9px] text-ink-4 tracking-[0.18em] pt-2">
-              GENERATED · {new Date(analysis.generatedAt).toLocaleString()}
+              GENERATED · {analysis.generatedAt && new Date(analysis.generatedAt).toLocaleString()}
             </div>
           </>
         )}

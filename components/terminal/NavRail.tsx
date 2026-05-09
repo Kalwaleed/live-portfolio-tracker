@@ -1,5 +1,5 @@
 import React from 'react';
-import { PortfolioItem } from '../../types';
+import { PricedHolding } from '../../types';
 import { cls, fmtPct, fmtUsd, plClass } from '../../utils/format';
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
   onAnalyze: () => void;
   analyzing: boolean;
   totalNlv: number;
-  positions: PortfolioItem[];
+  positions: PricedHolding[];
 }
 
 const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (

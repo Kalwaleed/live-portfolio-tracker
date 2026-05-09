@@ -1,8 +1,8 @@
 import React from 'react';
-import { PortfolioItem } from '../../types';
+import { PricedHolding } from '../../types';
 import { fmtNum, fmtPct, plClass } from '../../utils/format';
 
-const Ticker: React.FC<{ holdings: PortfolioItem[] }> = ({ holdings }) => {
+const Ticker: React.FC<{ holdings: PricedHolding[] }> = ({ holdings }) => {
   if (!holdings.length) return <div className="h-6 border-b border-line bg-bg-0" />;
 
   const items = holdings.slice(0, 24);

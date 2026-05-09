@@ -1,11 +1,11 @@
 import React, { useMemo, useState } from 'react';
-import { PortfolioItem } from '../../types';
+import { PricedHolding } from '../../types';
 import { cls, fmtNum, fmtPct, fmtUsd, plClass } from '../../utils/format';
 
 type SortKey = 'Symbol' | 'Sector' | 'Quantity' | 'PurchasePrice' | 'CurrentPrice' | 'MarketValue' | 'Weight' | 'UnrealizedPL' | 'PLPct';
 
 interface Props {
-  holdings: PortfolioItem[];
+  holdings: PricedHolding[];
   totalNlv: number;
   mode: 'holdings' | 'watchlist';
 }
