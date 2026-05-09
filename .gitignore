@@ -26,3 +26,8 @@ firebase-debug.log
 
 # Claude Code session state
 .claude/
+
+# Local-only screenshots (kept on disk, never committed —
+# may contain real portfolio dollar values).
+Screenshop-examples/
+screenshots/local/
