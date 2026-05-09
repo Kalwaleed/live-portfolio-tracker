@@ -2,6 +2,16 @@
 <img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
+Just open-sourced a live portfolio tracker.
+
+Super jank but whatever. My first open-source PoS code through Claude and Gemini haha! 
+
+(Something bad and embarrassing will be in there, but I'm here to learn lol)
+
+Upload a CSV, get a Bloomberg-style terminal: KPIs, sector treemap, Gemini-powered risk audit, mover
+detection, earnings calendar.
+Keyboard-first. Runs entirely in your browser. No backend.
+
 # Live Portfolio Tracker & AI Alert System
 
 A React-based portfolio dashboard powered by Google's Gemini API. Upload a
@@ -14,7 +24,7 @@ never leave your machine — there is no backend, no telemetry, no tracking.
 
 ---
 
-## Screenshots
+## Example Screenshots
 
 **Holdings book** — sortable table, ticker tape, KPI strip, concentration sidebar.
 ![Holdings book](./screenshots/02-holdings-book.png)
