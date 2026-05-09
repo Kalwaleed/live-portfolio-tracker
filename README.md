@@ -14,6 +14,19 @@ never leave your machine — there is no backend, no telemetry, no tracking.
 
 ---
 
+## Screenshots
+
+**Holdings book** — sortable table, ticker tape, KPI strip, concentration sidebar.
+![Holdings book](./screenshots/02-holdings-book.png)
+
+**Sector treemap** — weight by market value, colored by P&L.
+![Sector treemap](./screenshots/03-sector-treemap.png)
+
+**Help overlay** — auto-generated from the command registry. Press `?` any time.
+![Help overlay](./screenshots/04-help-overlay.png)
+
+---
+
 ## Features
 
 - **CSV upload** — drop in your holdings (Symbol, Quantity, CurrentPrice,
